@@ -199,3 +199,76 @@
 .pick__del:hover {
   color: var(--away);
 }
+
+/* --- התאמה לפי מצב הפול --- */
+.set__toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  font-size: var(--fs-label);
+  color: var(--text);
+  cursor: pointer;
+  padding-top: var(--sp-2);
+}
+.set__toggle input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--steady);
+  cursor: pointer;
+}
+.set__pool {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  margin-top: var(--sp-2);
+}
+.set__seg {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 3px;
+  background: var(--surface-2);
+  border: var(--bd);
+  border-radius: var(--r-pill);
+}
+.set__seg button {
+  padding: var(--sp-3);
+  border: none;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--text-dim);
+  font-size: var(--fs-label);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    color var(--dur) var(--ease),
+    background var(--dur) var(--ease);
+}
+.set__seg button.is-on {
+  background: var(--surface);
+  color: var(--text);
+}
+.set__points {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  font-size: var(--fs-label);
+  color: var(--text-dim);
+}
+.set__points input {
+  width: 84px;
+  padding: var(--sp-2) var(--sp-3);
+  background: var(--surface-2);
+  border: var(--bd);
+  border-radius: var(--radius-md);
+  color: var(--text);
+  font-size: var(--fs-body);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+.set__points input:focus-visible {
+  outline: none;
+  border-color: var(--steady);
+  box-shadow: 0 0 0 2px var(--focus);
+}

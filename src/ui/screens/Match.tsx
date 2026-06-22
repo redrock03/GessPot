@@ -5,7 +5,7 @@ import type { AnalystInput } from '../../api/analyst';
 import type { Stage } from '../../domain/types';
 import { couponGrid, DEFAULT_RHO } from '../../domain/engine/poisson';
 import { h2hResultsFromFixtures, qualNeeds } from '../../domain/engine/qualify';
-import { recommendByRisk } from '../../domain/engine/suggest';
+import { recommendByRisk, riskFromPoolGap } from '../../domain/engine/suggest';
 import { computeStakes, describeNeed } from '../../domain/engine/stakes';
 import { useAppStore } from '../../state/store';
 import {
@@ -57,10 +57,16 @@ export function Match() {
 
   // הגדרות + ניחושים שמורים (M6).
   const riskAlpha = useAppStore((s) => s.riskAlpha);
+  const poolAdjust = useAppStore((s) => s.poolAdjust);
+  const poolBehind = useAppStore((s) => s.poolBehind);
+  const poolPoints = useAppStore((s) => s.poolPoints);
   const savedPick = useAppStore((s) => (id !== undefined ? s.savedPicks[id] : undefined));
   const savePick = useAppStore((s) => s.savePick);
   const removePick = useAppStore((s) => s.removePick);
   const queryClient = useQueryClient();
+
+  // אגרסיביות אפקטיבית: לפי מצב הפול אם הופעל, אחרת החוגה הידנית.
+  const effAlpha = poolAdjust ? riskFromPoolGap(poolBehind ? poolPoints : -poolPoints) : riskAlpha;
 
   // מצב ההעפלה (מוטיבציה) — רק בשלב הבתים. נגזר מהבית של המארחת.
   const stakesInfo = useMemo(() => {
@@ -190,7 +196,7 @@ export function Match() {
               advice={adviceQ.data.advice}
               homeName={fixture.home.name}
               awayName={fixture.away.name}
-              recommended={recommendByRisk(adviceQ.data.advice, riskAlpha, fixture.stage)}
+              recommended={recommendByRisk(adviceQ.data.advice, effAlpha, fixture.stage)}
               savedKind={savedPick?.kind ?? null}
               onSave={(kind) => {
                 const pick =
@@ -211,6 +217,23 @@ export function Match() {
               onRemove={() => removePick(fixture.id)}
             />
           </section>
+
+          {stakesInfo && (stakesInfo.homeNeed || stakesInfo.awayNeed) && (
+            <section className="panel match-stakes">
+              <h2 className="panel__title">מה צריך כל צד</h2>
+              <ul className="ms-list">
+                <li>
+                  <span className="ms-team">{fixture.home.name}</span>
+                  <span className="ms-need">{describeNeed(stakesInfo.homeNeed)}</span>
+                </li>
+                <li>
+                  <span className="ms-team">{fixture.away.name}</span>
+                  <span className="ms-need">{describeNeed(stakesInfo.awayNeed)}</span>
+                </li>
+              </ul>
+              <p className="ms-foot">ההצעות וההסתברויות כאן כבר שוקללו לפי המוטיבציה של כל צד.</p>
+            </section>
+          )}
 
           <section className="panel">
             <h2 className="panel__title">סיכויי התוצאה</h2>

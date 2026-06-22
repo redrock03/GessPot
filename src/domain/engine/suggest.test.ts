@@ -2,7 +2,13 @@ import { describe, expect, it } from 'vitest';
 import type { MatchAdvice } from '../types';
 import type { ScoreMatrix } from './poisson';
 import { buildMatrix } from './poisson';
-import { adviseFrom1x2, adviseFromLambdas, recommendByRisk, suggest } from './suggest';
+import {
+  adviseFrom1x2,
+  adviseFromLambdas,
+  recommendByRisk,
+  riskFromPoolGap,
+  suggest,
+} from './suggest';
 
 describe('suggest — חוזה §4 על מטריצה בנויה ידנית', () => {
   // מקרה ליבה: הציון הסביר ביותר הוא תיקו 1-1, אך הכיוון הסביר ביותר הוא ניצחון בית.
@@ -108,6 +114,16 @@ describe('recommendByRisk — חוגת הסיכון §4', () => {
   it('חוסם α מחוץ לטווח [0,1]', () => {
     expect(recommendByRisk(split, -5, 'group')).toBe('tendency');
     expect(recommendByRisk(split, 5, 'group')).toBe('exact');
+  });
+
+  it('riskFromPoolGap: מאוזן באפס, דוחף לבול מאחור, לבטוח כשמובילים', () => {
+    expect(riskFromPoolGap(0)).toBeCloseTo(0.5, 10);
+    expect(riskFromPoolGap(10)).toBeCloseTo(1, 10); // 10 מאחור → בול מלא
+    expect(riskFromPoolGap(-10)).toBeCloseTo(0, 10); // 10 מוביל → בטוח מלא
+    expect(riskFromPoolGap(5)).toBeCloseTo(0.75, 10);
+    expect(riskFromPoolGap(-5)).toBeCloseTo(0.25, 10);
+    expect(riskFromPoolGap(50)).toBeCloseTo(1, 10); // נחסם
+    expect(riskFromPoolGap(-50)).toBeCloseTo(0, 10);
   });
 
   it('α=1 מגיע לבול גם במשחק עתיר-שערים עם פער-Pexact צר (חוזה החוגה)', () => {

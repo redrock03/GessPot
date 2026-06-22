@@ -101,6 +101,16 @@ export function recommendByRisk(
   return blended(advice.exactPick) >= blended(advice.tendencyPick) ? 'exact' : 'tendency';
 }
 
+/**
+ * מצב הפול → אגרסיביות (§4): פער חתום מהמוביל → α∈[0,1].
+ * gap>0 = מאחורי המוביל (דוחף לבול/שונות); gap<0 = מוביל (כיוון בטוח); 0 = מאוזן.
+ * `scale` = מרחק-קאמבק משמעותי בנקודות (ברירת מחדל 10).
+ */
+export function riskFromPoolGap(gap: number, scale = 10): number {
+  const t = Math.max(-1, Math.min(1, gap / Math.max(1, scale)));
+  return clamp01(0.5 + 0.5 * t);
+}
+
 /** נוחות ל-M3: אחוזי 1X2 (מ-/predictions) → כיול λ → מטריצה → שתי ההצעות. */
 export function adviseFrom1x2(target: OneXTwo, stage: Stage, rho = DEFAULT_RHO): MatchAdvice {
   const { lambdaHome, lambdaAway } = deriveLambdas(target, { rho });

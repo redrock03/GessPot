@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ANALYST_BASE, API_BASE } from '../../config';
 import type { Stage } from '../../domain/types';
+import { riskFromPoolGap } from '../../domain/engine/suggest';
 import { useAppStore } from '../../state/store';
 import './settings.css';
 
@@ -34,9 +35,18 @@ function Status({ on, onText, offText }: { on: boolean; onText: string; offText:
 export function Settings() {
   const riskAlpha = useAppStore((s) => s.riskAlpha);
   const setRiskAlpha = useAppStore((s) => s.setRiskAlpha);
+  const poolAdjust = useAppStore((s) => s.poolAdjust);
+  const poolBehind = useAppStore((s) => s.poolBehind);
+  const poolPoints = useAppStore((s) => s.poolPoints);
+  const setPoolAdjust = useAppStore((s) => s.setPoolAdjust);
+  const setPoolBehind = useAppStore((s) => s.setPoolBehind);
+  const setPoolPoints = useAppStore((s) => s.setPoolPoints);
   const savedPicks = useAppStore((s) => s.savedPicks);
   const removePick = useAppStore((s) => s.removePick);
   const picks = Object.values(savedPicks).sort((a, b) => b.savedAt.localeCompare(a.savedAt));
+
+  const poolGap = poolBehind ? poolPoints : -poolPoints;
+  const effAlpha = poolAdjust ? riskFromPoolGap(poolGap) : riskAlpha;
 
   return (
     <>
@@ -50,23 +60,77 @@ export function Settings() {
           מטה את ההמלצה בין הכיוון הבטוח (EV מרבי) לרדיפת הבול (תקרה מרבית). שתי ההצעות תמיד מוצגות
           במלואן.
         </p>
-        <div className="set__dial">
-          <span className="set__dial-end">בטוח</span>
+
+        {!poolAdjust && (
+          <>
+            <div className="set__dial">
+              <span className="set__dial-end">בטוח</span>
+              <input
+                type="range"
+                className="set__range"
+                min={0}
+                max={1}
+                step={0.05}
+                value={riskAlpha}
+                onChange={(e) => setRiskAlpha(Number(e.target.value))}
+                aria-label="חוגת סיכון"
+              />
+              <span className="set__dial-end set__dial-end--strike">בול</span>
+            </div>
+            <div className="set__dial-val">
+              {riskLabel(riskAlpha)} · <span className="num">{Math.round(riskAlpha * 100)}%</span>
+            </div>
+          </>
+        )}
+
+        <label className="set__toggle">
           <input
-            type="range"
-            className="set__range"
-            min={0}
-            max={1}
-            step={0.05}
-            value={riskAlpha}
-            onChange={(e) => setRiskAlpha(Number(e.target.value))}
-            aria-label="חוגת סיכון"
+            type="checkbox"
+            checked={poolAdjust}
+            onChange={(e) => setPoolAdjust(e.target.checked)}
           />
-          <span className="set__dial-end set__dial-end--strike">בול</span>
-        </div>
-        <div className="set__dial-val">
-          {riskLabel(riskAlpha)} · <span className="num">{Math.round(riskAlpha * 100)}%</span>
-        </div>
+          <span>התאם אוטומטית לפי מצב הפול</span>
+        </label>
+
+        {poolAdjust && (
+          <div className="set__pool">
+            <div className="set__seg" role="group" aria-label="מיקום בפול">
+              <button
+                type="button"
+                className={poolBehind ? 'is-on' : undefined}
+                onClick={() => setPoolBehind(true)}
+              >
+                אני מאחור
+              </button>
+              <button
+                type="button"
+                className={!poolBehind ? 'is-on' : undefined}
+                onClick={() => setPoolBehind(false)}
+              >
+                אני מוביל
+              </button>
+            </div>
+            <label className="set__points">
+              <span>{poolBehind ? 'פער מהמוביל (נק׳)' : 'יתרון על המקום ה-2 (נק׳)'}</span>
+              <input
+                type="number"
+                min={0}
+                inputMode="numeric"
+                value={poolPoints}
+                onChange={(e) => setPoolPoints(Number(e.target.value))}
+              />
+            </label>
+            <div className="set__dial-val">
+              אגרסיביות מומלצת: {riskLabel(effAlpha)} ·{' '}
+              <span className="num">{Math.round(effAlpha * 100)}%</span>
+            </div>
+            <p className="set__hint">
+              {poolBehind
+                ? 'מאחורי המוביל → דוחפים לבול לשונות גבוהה (צריך תקרה כדי לסגור פער).'
+                : 'מובילים → משחק בטוח לשמירה על היתרון (EV מרבי).'}
+            </p>
+          </div>
+        )}
       </section>
 
       <section className="panel set">
