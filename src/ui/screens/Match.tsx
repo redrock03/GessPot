@@ -192,6 +192,16 @@ export function Match() {
       {adviceQ.data && (
         <>
           <section className="panel panel--hero">
+            {poolAdjust && (
+              <div className="match__poolbadge">
+                <span className="match__poolbadge-k">מותאם למצב הפול</span>
+                {poolPoints === 0
+                  ? 'צמוד למוביל — מאוזן'
+                  : poolBehind
+                    ? `מאחורי ${poolPoints} נק׳ — נוטה לבול`
+                    : `מוביל ב-${poolPoints} נק׳ — נוטה לבטוח`}
+              </div>
+            )}
             <SuggestionPair
               advice={adviceQ.data.advice}
               homeName={fixture.home.name}

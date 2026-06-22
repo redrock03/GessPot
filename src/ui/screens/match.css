@@ -184,3 +184,22 @@
   font-size: var(--fs-meta);
   color: var(--text-mute);
 }
+
+/* תג "מותאם למצב הפול" — מסביר למה ההמלצה אגרסיבית/בטוחה. */
+.match__poolbadge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  width: fit-content;
+  margin-bottom: var(--sp-4);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--steady) 10%, var(--surface-2));
+  border: 1px solid color-mix(in srgb, var(--steady) 25%, var(--line));
+  font-size: var(--fs-meta);
+  color: var(--text-dim);
+}
+.match__poolbadge-k {
+  font-weight: 700;
+  color: var(--steady);
+}
