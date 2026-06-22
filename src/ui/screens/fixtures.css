@@ -1,0 +1,257 @@
+/* מסך משחקים — לוח יום-משחק: פס "היום/חי" + לוח לפי יום + תוצאות כסקורבורד. */
+
+/* --- פס "היום / חי" --- */
+.fxb {
+  margin-bottom: var(--sp-6);
+}
+.fxb__title {
+  margin: 0 2px var(--sp-4);
+  font-size: var(--fs-meta);
+  font-weight: var(--fw-label);
+  letter-spacing: 0.06em;
+  color: var(--text-mute);
+}
+.fxb__strip {
+  display: flex;
+  gap: var(--sp-3);
+  overflow-x: auto;
+  padding-bottom: var(--sp-2);
+  scroll-snap-type: x mandatory;
+}
+.fxb__strip::-webkit-scrollbar {
+  height: 0;
+}
+.fxb-card {
+  flex: 0 0 auto;
+  min-width: 210px;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  background: var(--surface);
+  border: var(--bd);
+  border-radius: var(--r-card);
+  text-decoration: none;
+  transition:
+    transform var(--dur) var(--ease),
+    border-color var(--dur) var(--ease);
+}
+.fxb-card:hover {
+  transform: translateY(-2px);
+}
+.fxb-card.is-live {
+  border-color: color-mix(in srgb, var(--away) 40%, var(--line));
+  background: color-mix(in srgb, var(--away) 6%, var(--surface));
+}
+.fxb-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--fs-micro);
+}
+.fxb-card__ctx {
+  color: var(--text-mute);
+  font-weight: 700;
+}
+.fxb-card__time {
+  color: var(--text-dim);
+  font-weight: 700;
+}
+.fxb-card__live {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--away);
+  font-weight: 800;
+}
+.fxb-card__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--away);
+  animation: fxb-pulse 1.4s ease-out infinite;
+}
+@keyframes fxb-pulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--away) 55%, transparent);
+  }
+  70% {
+    box-shadow: 0 0 0 6px transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+.fxb-card__rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.fxb-card__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+.fxb-card__team {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+  font-size: var(--fs-label);
+  font-weight: 600;
+  color: var(--text);
+}
+.fxb-card__team img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  flex: none;
+}
+.fxb-card__team span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.fxb-card__g {
+  font-size: var(--fs-h2);
+  font-weight: 800;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.fxb-card__saved {
+  font-size: var(--fs-micro);
+  font-weight: 700;
+  color: var(--home);
+}
+
+/* --- מקטעי לוח לפי יום --- */
+.fx-sec {
+  margin-top: var(--sp-6);
+}
+.fx-sec__title {
+  margin: 0 2px var(--sp-4);
+  font-size: var(--fs-meta);
+  font-weight: var(--fw-label);
+  letter-spacing: 0.06em;
+  color: var(--text-mute);
+}
+.fx-day {
+  margin-bottom: var(--sp-5);
+}
+.fx-day__label {
+  margin-bottom: var(--sp-3);
+  padding-bottom: var(--sp-2);
+  border-bottom: var(--bd);
+  font-size: var(--fs-label);
+  font-weight: 700;
+  color: var(--text-dim);
+}
+.fx-day__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+/* --- שורת משחק --- */
+.fxr {
+  display: block;
+  text-decoration: none;
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--surface);
+  border: var(--bd);
+  border-radius: var(--radius-md);
+  transition:
+    transform var(--dur) var(--ease),
+    border-color var(--dur) var(--ease);
+}
+.fxr:hover {
+  transform: translateY(-1px);
+  border-color: var(--text-mute);
+}
+.fxr.is-value {
+  border-color: color-mix(in srgb, var(--strike) 35%, var(--line));
+}
+.fxr--result {
+  background: var(--surface-2);
+}
+.fxr__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-2);
+}
+.fxr__ctx {
+  font-size: var(--fs-micro);
+  font-weight: 700;
+  color: var(--text-mute);
+}
+.fxr__star {
+  font-size: var(--fs-micro);
+  color: var(--strike);
+}
+.fxr__done {
+  margin-inline-start: auto;
+  font-size: var(--fs-micro);
+  font-weight: 700;
+  color: var(--home);
+}
+.fxr__match {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.fxr__team {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+  font-size: var(--fs-label);
+  color: var(--text-dim);
+}
+.fxr__team--away {
+  flex-direction: row-reverse;
+  text-align: start;
+}
+.fxr__team img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  flex: none;
+}
+.fxr__team span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.fxr__team.is-win {
+  color: var(--text);
+  font-weight: 700;
+}
+.fxr__mid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  min-width: 56px;
+}
+.fxr__score {
+  font-size: var(--fs-h2);
+  font-weight: 800;
+  color: var(--text);
+}
+.fxr__time {
+  font-size: var(--fs-label);
+  font-weight: 600;
+  color: var(--text-dim);
+}
+.fxr__live {
+  font-size: var(--fs-micro);
+  font-weight: 800;
+  color: var(--away);
+}
