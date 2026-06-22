@@ -1,15 +1,30 @@
 import { useEffect, useState } from 'react';
 import './splash.css';
 
-/** אנימציית כניסה ממותגת — Redrock Studio. נפתחת בעלייה, מחזיקה רגע, ומתמוססת אל המוצר.
- *  ניתנת לדילוג בהקשה; מיידית כש-prefers-reduced-motion. */
+const SPLASH_KEY = 'rr-splash';
+const seen = (): boolean => {
+  try {
+    return sessionStorage.getItem(SPLASH_KEY) === '1';
+  } catch {
+    return false;
+  }
+};
+
+/** אנימציית כניסה ממותגת — Redrock Studio. פעם אחת לכל סשן (נטען חדש), לא בכל רענון.
+ *  עלייה → החזקה קצרה → התמוססות אל המוצר. ניתנת לדילוג בהקשה; מוסתרת ב-prefers-reduced-motion. */
 export function Splash() {
-  const [phase, setPhase] = useState<'in' | 'out' | 'done'>('in');
+  const [phase, setPhase] = useState<'in' | 'out' | 'done'>(() => (seen() ? 'done' : 'in'));
 
   useEffect(() => {
+    if (seen()) return; // כבר הוצג בסשן הזה
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       setPhase('done');
       return;
+    }
+    try {
+      sessionStorage.setItem(SPLASH_KEY, '1');
+    } catch {
+      /* אחסון חסום — עדיין מציגים פעם אחת */
     }
     const toOut = setTimeout(() => setPhase('out'), 1350);
     const toDone = setTimeout(() => setPhase('done'), 1950);
