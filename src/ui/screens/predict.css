@@ -1,95 +1,235 @@
-/* מסך חיזוי — לוח: ניחושים שמורים + הבאים בתור (משטח שיגור לחיזוי פר-משחק). */
-.pr-block + .pr-block {
+/* מסך חיזוי — לוח: גיבור "המשחק הבא" + כרטיסיות ניחושים + אג'נדה לפי יום. */
+
+/* --- גיבור: המשחק הבא --- */
+.pr-hero {
+  display: block;
+  text-decoration: none;
+  background: linear-gradient(
+    155deg,
+    color-mix(in srgb, var(--strike) 8%, var(--surface)),
+    var(--surface) 56%
+  );
+  border: var(--bd);
+  border-radius: var(--r-card);
+  padding: var(--sp-6) var(--sp-6) var(--sp-5);
+  margin-bottom: var(--sp-7);
+  transition:
+    transform var(--dur) var(--ease),
+    border-color var(--dur) var(--ease);
+}
+.pr-hero:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--strike) 40%, var(--line));
+}
+.pr-hero__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--sp-5);
+}
+.pr-hero__kicker {
+  font-size: var(--fs-meta);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--strike);
+}
+.pr-hero__when {
+  font-size: var(--fs-label);
+  font-weight: 600;
+  color: var(--text-dim);
+  background: var(--surface-2);
+  border: var(--bd);
+  border-radius: var(--r-pill);
+  padding: 2px var(--sp-3);
+}
+.pr-hero__teams {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-5);
+}
+.pr-hero__team {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-width: 0;
+  font-size: var(--fs-h1);
+  font-weight: 800;
+  color: var(--text);
+}
+.pr-hero__team img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  flex: none;
+}
+.pr-hero__team span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pr-hero__vs {
+  font-size: var(--fs-meta);
+  color: var(--text-mute);
+  padding-inline-start: 42px;
+}
+.pr-hero__foot {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding-top: var(--sp-4);
+  border-top: var(--bd);
+}
+.pr-hero__time {
+  font-size: var(--fs-h2);
+  font-weight: 700;
+  color: var(--text);
+}
+.pr-hero__tag {
+  font-size: var(--fs-micro);
+  font-weight: 700;
+  padding: 2px var(--sp-2);
+  border-radius: var(--r-pill);
+}
+.pr-hero__tag--val {
+  color: var(--strike);
+  background: color-mix(in srgb, var(--strike) 14%, transparent);
+}
+.pr-hero__tag--saved {
+  color: var(--home);
+  background: color-mix(in srgb, var(--home) 14%, transparent);
+}
+.pr-hero__cta {
+  margin-inline-start: auto;
+  font-size: var(--fs-label);
+  font-weight: 800;
+  color: var(--strike);
+}
+
+/* --- מקטעים --- */
+.pr-sec {
   margin-top: var(--sp-7);
 }
-.pr-block__title {
+.pr-sec__title {
   margin: 0 2px var(--sp-4);
   font-size: var(--fs-meta);
   font-weight: var(--fw-label);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   color: var(--text-mute);
 }
-.pr-list {
+
+/* --- כרטיסיות ניחושים (גלילה אופקית) --- */
+.pr-tickets {
+  display: flex;
+  gap: var(--sp-3);
+  overflow-x: auto;
+  padding-bottom: var(--sp-2);
+  scroll-snap-type: x mandatory;
+}
+.pr-tickets::-webkit-scrollbar {
+  height: 0;
+}
+.pr-ticket {
+  flex: 0 0 auto;
+  min-width: 138px;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-4);
+  background: var(--surface-2);
+  border: var(--bd);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+}
+.pr-ticket__score {
+  font-size: var(--fs-h1);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--text);
+}
+.pr-ticket__teams {
+  font-size: var(--fs-micro);
+  color: var(--text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pr-ticket__kind {
+  align-self: flex-start;
+  font-size: var(--fs-micro);
+  font-weight: 700;
+  padding: 1px var(--sp-2);
+  border-radius: var(--r-pill);
+}
+.pr-ticket__kind--steady {
+  color: var(--steady);
+  background: color-mix(in srgb, var(--steady) 14%, transparent);
+}
+.pr-ticket__kind--strike {
+  color: var(--strike);
+  background: color-mix(in srgb, var(--strike) 14%, transparent);
+}
+
+/* --- אג'נדה לפי יום --- */
+.pr-day {
+  margin-bottom: var(--sp-5);
+}
+.pr-day__label {
+  margin-bottom: var(--sp-3);
+  padding-bottom: var(--sp-2);
+  border-bottom: var(--bd);
+  font-size: var(--fs-label);
+  font-weight: 700;
+  color: var(--text-dim);
+}
+.pr-day__list {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--sp-3);
+  gap: 1px;
 }
-.pr-row {
+.pr-match {
   display: grid;
-  grid-template-columns: 1fr auto auto;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
-  gap: var(--sp-3);
-  padding: var(--sp-4) var(--sp-4);
-  background: var(--surface);
-  border: var(--bd);
+  gap: var(--sp-4);
+  padding: var(--sp-3) var(--sp-4);
   border-radius: var(--radius-md);
   text-decoration: none;
-  transition:
-    border-color var(--dur) var(--ease),
-    transform var(--dur) var(--ease);
+  transition: background var(--dur) var(--ease);
 }
-.pr-row:hover {
-  transform: translateY(-1px);
-  border-color: var(--text-mute);
+.pr-match:hover {
+  background: var(--surface-2);
 }
-.pr-row.is-value {
-  border-color: color-mix(in srgb, var(--strike) 45%, var(--line));
+.pr-match__time {
+  font-size: var(--fs-label);
+  font-weight: 700;
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
 }
-.pr-row__teams {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-  min-width: 0;
+.pr-match__teams {
   font-size: var(--fs-label);
   color: var(--text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.pr-star {
+.pr-match__star {
   color: var(--strike);
-  font-size: var(--fs-meta);
-  flex: none;
+  margin-inline-end: 2px;
 }
-.pr-done {
+.pr-match__dash {
+  color: var(--text-mute);
+}
+.pr-match__done {
   color: var(--home);
-  font-size: var(--fs-label);
   font-weight: 700;
-}
-.pr-row__when {
-  font-size: var(--fs-meta);
-  color: var(--text-dim);
-  white-space: nowrap;
-}
-.pr-kind {
-  font-size: var(--fs-micro);
-  font-weight: 700;
-  padding: 2px var(--sp-3);
-  border-radius: var(--r-pill);
-}
-.pr-kind--steady {
-  color: var(--steady);
-  background: color-mix(in srgb, var(--steady) 14%, transparent);
-}
-.pr-kind--strike {
-  color: var(--strike);
-  background: color-mix(in srgb, var(--strike) 14%, transparent);
-}
-.pr-row__score {
-  font-size: var(--fs-body);
-  font-weight: 700;
-  color: var(--text);
 }
 .pr-empty {
   margin: 0;
   font-size: var(--fs-body);
-  color: var(--text-mute);
-}
-.pr-hint {
-  margin: var(--sp-4) 2px 0;
-  font-size: var(--fs-meta);
   color: var(--text-mute);
 }
