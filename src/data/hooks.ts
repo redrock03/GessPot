@@ -4,7 +4,9 @@ import {
   getFixtures,
   getCurrentRound,
   getHeadToHead,
+  getInjuries,
   getLeagueCoverage,
+  getLineups,
   getOdds,
   getPrediction,
   getStandings,
@@ -80,17 +82,22 @@ export function useMatchEnrichment(
     enabled: fixtureId !== undefined && homeId !== undefined && awayId !== undefined,
     staleTime: 30 * 60_000,
     queryFn: async (): Promise<MatchEnrichment> => {
-      // allSettled — כשל בקריאה אחת (coverage משתנה ממשחק למשחק, §7) מנוון רק את אותו חלק.
-      const [hStats, aStats, h2h, hPlayers, aPlayers, odds] = await Promise.allSettled([
-        getTeamStatistics(homeId!),
-        getTeamStatistics(awayId!),
-        getHeadToHead(homeId!, awayId!),
-        getTeamPlayers(homeId!),
-        getTeamPlayers(awayId!),
-        getOdds(fixtureId!),
-      ]);
+      // allSettled — כשל/ריקנות בקריאה אחת (coverage משתנה ממשחק למשחק, §7) מנוון רק את אותו חלק.
+      const [hStats, aStats, h2h, hPlayers, aPlayers, odds, lineups, injuries] =
+        await Promise.allSettled([
+          getTeamStatistics(homeId!),
+          getTeamStatistics(awayId!),
+          getHeadToHead(homeId!, awayId!),
+          getTeamPlayers(homeId!),
+          getTeamPlayers(awayId!),
+          getOdds(fixtureId!),
+          getLineups(fixtureId!), // הרכב רשמי (קרוב לפתיחה) — האות החזק ביותר
+          getInjuries(fixtureId!), // נעדרים (כרגע coverage כבוי → ריק; מתעורר אוטומטית)
+        ]);
       const ok = <T,>(r: PromiseSettledResult<T>, fallback: T): T =>
         r.status === 'fulfilled' ? r.value : fallback;
+      const lns = ok(lineups, []);
+      const inj = ok(injuries, []);
       return buildEnrichment(
         ok(hStats, {}),
         ok(hPlayers, []),
@@ -98,6 +105,12 @@ export function useMatchEnrichment(
         ok(aPlayers, []),
         ok(h2h, []),
         ok(odds, []),
+        {
+          homeLineup: lns.find((l) => l.team.id === homeId),
+          awayLineup: lns.find((l) => l.team.id === awayId),
+          homeInjuries: inj.filter((i) => i.team.id === homeId),
+          awayInjuries: inj.filter((i) => i.team.id === awayId),
+        },
       );
     },
   });

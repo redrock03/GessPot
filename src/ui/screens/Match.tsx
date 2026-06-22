@@ -103,8 +103,13 @@ export function Match() {
             goalsAgainstAvg: enrich[t].goalsAgainstAvg,
             keyPlayers: enrich[t].keyPlayers,
             cardRiskPlayers: enrich[t].oneFromBan, // במרחק כרטיס מהשעיה
+            formation: enrich[t].formation, // מערך רשמי (כשפורסם)
+            startingXI: enrich[t].startXI, // הרכב פתיחה — האות החזק קרוב לפתיחה
           }
         : undefined;
+    const outOf = enrich && (enrich.home.out || enrich.away.out)
+      ? { home: enrich.home.out, away: enrich.away.out }
+      : undefined;
     return {
       fixture: {
         home: fixture.home.name,
@@ -117,6 +122,7 @@ export function Match() {
       awayStats: statsOf('away'),
       h2h: enrich?.h2h,
       odds: enrich?.market,
+      absences: outOf,
       stakes: stakesText,
       notes: stakesInfo?.stakes.note || undefined,
     };

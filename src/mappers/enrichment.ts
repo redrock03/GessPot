@@ -1,6 +1,13 @@
 // העשרת המודיעין למסך המשחק (CLAUDE.md §9–§10): כושר, ממוצעי שערים, ראש-בראש,
 // וניתוח סגל (התנהגות + "במרחק כרטיס מהשעיה" + שחקני מפתח). גבול → domain.
-import type { FixtureItem, OddsItem, PlayerItem, TeamStats } from '../api/schemas';
+import type {
+  FixtureItem,
+  InjuryItem,
+  LineupItem,
+  OddsItem,
+  PlayerItem,
+  TeamStats,
+} from '../api/schemas';
 import { analyzeSquad, type SquadPlayer } from '../domain/engine/absences';
 import { statusToState } from './stage';
 
@@ -20,6 +27,20 @@ export interface TeamEnrichment {
   oneFromBan: string[];
   /** שמות השחקנים המשפיעים ביותר. */
   keyPlayers: string[];
+  /** מערך משוער/רשמי, למשל "4-3-3" (כשפורסם). */
+  formation?: string;
+  /** הרכב פתיחה (שמות) — האות הכי חזק קרוב לפתיחה. */
+  startXI?: string[];
+  /** נעדרים ודאיים (פציעות/השעיות מ-/injuries, כשcoverage פעיל). */
+  out?: string[];
+}
+
+/** קלט אופציונלי לבניית ההעשרה — הרכבים והיעדרויות שכבר חולקו לפי בית/חוץ. */
+export interface EnrichExtras {
+  homeLineup?: LineupItem;
+  awayLineup?: LineupItem;
+  homeInjuries?: InjuryItem[];
+  awayInjuries?: InjuryItem[];
 }
 
 export interface MatchEnrichment {
@@ -53,8 +74,17 @@ function toSquad(players: PlayerItem[]): SquadPlayer[] {
   });
 }
 
-export function teamEnrichment(stats: TeamStats, players: PlayerItem[]): TeamEnrichment {
+export function teamEnrichment(
+  stats: TeamStats,
+  players: PlayerItem[],
+  lineup?: LineupItem,
+  injuries?: InjuryItem[],
+): TeamEnrichment {
   const squad = analyzeSquad(toSquad(players));
+  const startXI = (lineup?.startXI ?? [])
+    .map((s) => s.player.name ?? '')
+    .filter(Boolean);
+  const out = (injuries ?? []).map((i) => i.player.name ?? '').filter(Boolean);
   return {
     form: stats.form ?? undefined,
     goalsForAvg: num(stats.goals?.for?.average?.total),
@@ -62,6 +92,9 @@ export function teamEnrichment(stats: TeamStats, players: PlayerItem[]): TeamEnr
     conduct: squad.conduct,
     oneFromBan: squad.oneFromBan,
     keyPlayers: squad.topPlayers.map((p) => p.name).filter(Boolean),
+    formation: lineup?.formation ?? undefined,
+    startXI: startXI.length ? startXI : undefined,
+    out: out.length ? out : undefined,
   };
 }
 
@@ -120,10 +153,11 @@ export function buildEnrichment(
   awayPlayers: PlayerItem[],
   h2h: FixtureItem[],
   odds: OddsItem[] = [],
+  extras: EnrichExtras = {},
 ): MatchEnrichment {
   return {
-    home: teamEnrichment(homeStats, homePlayers),
-    away: teamEnrichment(awayStats, awayPlayers),
+    home: teamEnrichment(homeStats, homePlayers, extras.homeLineup, extras.homeInjuries),
+    away: teamEnrichment(awayStats, awayPlayers, extras.awayLineup, extras.awayInjuries),
     h2h: h2hSummary(h2h),
     market: marketProbs(odds),
   };

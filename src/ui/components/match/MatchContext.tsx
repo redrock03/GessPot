@@ -52,10 +52,22 @@ export function MatchContext({
     ...home.oneFromBan.map((n) => ({ name: n, team: homeName })),
     ...away.oneFromBan.map((n) => ({ name: n, team: awayName })),
   ];
+  const outList = [
+    ...(home.out ?? []).map((n) => `${n} (${homeName})`),
+    ...(away.out ?? []).map((n) => `${n} (${awayName})`),
+  ];
+  const hasLineup = Boolean(home.formation || away.formation);
+  const official = Boolean(home.startXI || away.startXI);
   const pct = (p: number) => `${Math.round(p * 100)}%`;
   const hasForm = Boolean(home.form || away.form);
   const empty =
-    !hasForm && !market && h2h.length === 0 && risks.length === 0 && home.keyPlayers.length === 0;
+    !hasForm &&
+    !market &&
+    !hasLineup &&
+    outList.length === 0 &&
+    h2h.length === 0 &&
+    risks.length === 0 &&
+    home.keyPlayers.length === 0;
 
   return (
     <section className="ctx" aria-label="מודיעין">
@@ -70,6 +82,35 @@ export function MatchContext({
             <span className="ctx__axis">כושר</span>
             <TeamColumn team={away} name={awayName} away />
           </div>
+
+          {hasLineup && (
+            <div className="ctx-lineups">
+              <h3 className="ctx__sub">
+                הרכבים {official && <span className="ctx-official">רשמי</span>}
+              </h3>
+              <div className="ctx-lineups__row">
+                <span className="ctx-lineups__cell">
+                  <b dir="ltr" className="num">
+                    {home.formation ?? '—'}
+                  </b>
+                  <span>{homeName}</span>
+                </span>
+                <span className="ctx-lineups__cell">
+                  <b dir="ltr" className="num">
+                    {away.formation ?? '—'}
+                  </b>
+                  <span>{awayName}</span>
+                </span>
+              </div>
+            </div>
+          )}
+
+          {outList.length > 0 && (
+            <div className="ctx-out">
+              <h3 className="ctx__sub">נעדרים</h3>
+              <span className="ctx-out__names">{outList.join(' · ')}</span>
+            </div>
+          )}
 
           {risks.length > 0 && (
             <div className="ctx-warn" role="note">

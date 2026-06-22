@@ -272,3 +272,11 @@
   border-color: var(--steady);
   box-shadow: 0 0 0 2px var(--focus);
 }
+
+.set__subhead {
+  margin: var(--sp-4) 0 0;
+  font-size: var(--fs-meta);
+  font-weight: var(--fw-label);
+  letter-spacing: 0.04em;
+  color: var(--text-mute);
+}

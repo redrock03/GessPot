@@ -168,3 +168,52 @@
   text-overflow: ellipsis;
   max-width: 100%;
 }
+
+/* --- הרכבים + נעדרים --- */
+.ctx-lineups {
+  padding-top: var(--sp-4);
+  border-top: var(--bd);
+}
+.ctx-official {
+  margin-inline-start: var(--sp-2);
+  font-size: var(--fs-micro);
+  font-weight: 700;
+  color: var(--home);
+  background: color-mix(in srgb, var(--home) 14%, transparent);
+  border-radius: var(--r-pill);
+  padding: 1px var(--sp-2);
+}
+.ctx-lineups__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-3);
+}
+.ctx-lineups__cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-align: center;
+}
+.ctx-lineups__cell b {
+  font-size: var(--fs-h2);
+  font-weight: 700;
+  color: var(--text);
+}
+.ctx-lineups__cell span {
+  font-size: var(--fs-micro);
+  color: var(--text-mute);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+.ctx-out {
+  padding-top: var(--sp-4);
+  border-top: var(--bd);
+}
+.ctx-out__names {
+  font-size: var(--fs-meta);
+  color: var(--text-dim);
+  line-height: 1.5;
+}

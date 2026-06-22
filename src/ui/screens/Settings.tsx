@@ -2,8 +2,18 @@ import { Link } from 'react-router-dom';
 import { ANALYST_BASE, API_BASE } from '../../config';
 import type { Stage } from '../../domain/types';
 import { riskFromPoolGap } from '../../domain/engine/suggest';
+import { useCoverage } from '../../data/hooks';
 import { useAppStore } from '../../state/store';
 import './settings.css';
+
+const COVERAGE_HE: Array<{ key: 'predictions' | 'odds' | 'lineups' | 'events' | 'statistics' | 'injuries'; label: string }> = [
+  { key: 'predictions', label: 'תחזיות API' },
+  { key: 'odds', label: 'ליינים (סוכנויות)' },
+  { key: 'lineups', label: 'הרכבים' },
+  { key: 'events', label: 'אירועים (כרטיסים)' },
+  { key: 'statistics', label: 'סטטיסטיקות משחק (xG)' },
+  { key: 'injuries', label: 'פציעות' },
+];
 
 const STAGE_HE: Record<Stage, string> = {
   group: 'שלב הבתים',
@@ -43,6 +53,7 @@ export function Settings() {
   const setPoolPoints = useAppStore((s) => s.setPoolPoints);
   const savedPicks = useAppStore((s) => s.savedPicks);
   const removePick = useAppStore((s) => s.removePick);
+  const coverage = useCoverage();
   const picks = Object.values(savedPicks).sort((a, b) => b.savedAt.localeCompare(a.savedAt));
 
   const poolGap = poolBehind ? poolPoints : -poolPoints;
@@ -145,6 +156,25 @@ export function Settings() {
             <Status on={Boolean(ANALYST_BASE)} onText="פעיל" offText="כבוי" />
           </li>
         </ul>
+
+        {coverage.data && (
+          <>
+            <h4 className="set__subhead">כיסוי נתוני המונדיאל</h4>
+            <ul className="set__conn">
+              {COVERAGE_HE.map(({ key, label }) => (
+                <li key={key}>
+                  <span>{label}</span>
+                  <Status on={coverage.data![key]} onText="זמין" offText="לא זמין" />
+                </li>
+              ))}
+            </ul>
+            <p className="set__hint">
+              נתונים ש"לא זמינים" כרגע (כמו פציעות) מתחברים אוטומטית ברגע שה-API יתחיל לספק אותם — אין
+              צורך בפעולה.
+            </p>
+          </>
+        )}
+
         <p className="set__hint">המפתחות חיים בשרת הפונקציות בלבד — לעולם לא בדפדפן.</p>
       </section>
 
