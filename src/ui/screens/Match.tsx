@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { Link, useParams } from 'react-router-dom';
 import type { AnalystInput } from '../../api/analyst';
 import type { Stage } from '../../domain/types';
@@ -59,6 +60,7 @@ export function Match() {
   const savedPick = useAppStore((s) => (id !== undefined ? s.savedPicks[id] : undefined));
   const savePick = useAppStore((s) => s.savePick);
   const removePick = useAppStore((s) => s.removePick);
+  const queryClient = useQueryClient();
 
   // מצב ההעפלה (מוטיבציה) — רק בשלב הבתים. נגזר מהבית של המארחת.
   const stakesInfo = useMemo(() => {
@@ -122,6 +124,17 @@ export function Match() {
   ]);
 
   const adviceQ = useMatchAdvice(input);
+
+  // חישוב מחדש: מרענן נתוני מקור (predictions/העשרה) ומריץ את האנליסט מחדש.
+  const regenerate = () => {
+    if (id !== undefined && fixture) {
+      void queryClient.invalidateQueries({ queryKey: ['prediction', id] });
+      void queryClient.invalidateQueries({
+        queryKey: ['enrichment', fixture.home.id, fixture.away.id],
+      });
+    }
+    void adviceQ.refetch();
+  };
 
   // ---- מצבי כניסה ----
   if (!id) {
@@ -225,6 +238,14 @@ export function Match() {
 
           <section className="panel">
             <AnalystNote prediction={adviceQ.data.prediction} />
+            <button
+              type="button"
+              className="match__regen"
+              onClick={regenerate}
+              disabled={adviceQ.isFetching}
+            >
+              {adviceQ.isFetching ? 'מחשב מחדש…' : '↻ חשב מחדש'}
+            </button>
           </section>
         </>
       )}

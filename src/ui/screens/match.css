@@ -123,3 +123,28 @@
     opacity: 0;
   }
 }
+
+/* כפתור "חשב מחדש" — מריץ את האנליסט שוב עם נתונים רעננים. */
+.match__regen {
+  margin-top: var(--sp-4);
+  width: 100%;
+  padding: var(--sp-3);
+  border: var(--bd);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  color: var(--text-dim);
+  font-size: var(--fs-label);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease);
+}
+.match__regen:hover:not(:disabled) {
+  color: var(--steady);
+  border-color: color-mix(in srgb, var(--steady) 40%, var(--line));
+}
+.match__regen:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
