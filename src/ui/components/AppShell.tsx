@@ -4,7 +4,7 @@ import { NavLink, Outlet } from 'react-router-dom';
 const NAV = [
   { to: '/', label: 'משחקים', icon: '⚽', end: true },
   { to: '/groups', label: 'בתים', icon: '📊', end: false },
-  { to: '/match', label: 'חיזוי', icon: '🎯', end: false },
+  { to: '/predict', label: 'חיזוי', icon: '🎯', end: false },
   { to: '/settings', label: 'הגדרות', icon: '⚙️', end: false },
 ] as const;
 

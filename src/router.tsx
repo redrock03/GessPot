@@ -3,6 +3,7 @@ import { AppShell } from './ui/components/AppShell';
 import { Fixtures } from './ui/screens/Fixtures';
 import { Groups } from './ui/screens/Groups';
 import { Match } from './ui/screens/Match';
+import { Predict } from './ui/screens/Predict';
 import { Settings } from './ui/screens/Settings';
 import { NotFound } from './ui/screens/NotFound';
 
@@ -14,7 +15,7 @@ export const router = createHashRouter([
     children: [
       { index: true, element: <Fixtures /> },
       { path: 'groups', element: <Groups /> },
-      { path: 'match', element: <Match /> },
+      { path: 'predict', element: <Predict /> },
       { path: 'match/:fixtureId', element: <Match /> },
       { path: 'settings', element: <Settings /> },
       { path: '*', element: <NotFound /> },
