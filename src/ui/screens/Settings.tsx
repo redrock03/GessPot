@@ -53,11 +53,16 @@ export function Settings() {
   const setPoolPoints = useAppStore((s) => s.setPoolPoints);
   const savedPicks = useAppStore((s) => s.savedPicks);
   const removePick = useAppStore((s) => s.removePick);
+  const clearPicks = useAppStore((s) => s.clearPicks);
   const coverage = useCoverage();
   const picks = Object.values(savedPicks).sort((a, b) => b.savedAt.localeCompare(a.savedAt));
 
   const poolGap = poolBehind ? poolPoints : -poolPoints;
   const effAlpha = poolAdjust ? riskFromPoolGap(poolGap) : riskAlpha;
+
+  const onClearPicks = () => {
+    if (window.confirm('למחוק את כל הניחושים השמורים?')) clearPicks();
+  };
 
   return (
     <>
@@ -65,6 +70,7 @@ export function Settings() {
         <h2>הגדרות</h2>
       </div>
 
+      <h3 className="set-cat">אסטרטגיה</h3>
       <section className="panel set">
         <h3 className="set__title">חוגת הסיכון</h3>
         <p className="set__hint">
@@ -144,44 +150,18 @@ export function Settings() {
         )}
       </section>
 
+      <h3 className="set-cat">הניחושים שלי</h3>
       <section className="panel set">
-        <h3 className="set__title">חיבור נתונים</h3>
-        <ul className="set__conn">
-          <li>
-            <span>פרוקסי API</span>
-            <Status on={Boolean(API_BASE)} onText="מחובר" offText="ישיר" />
-          </li>
-          <li>
-            <span>אנליסט Claude</span>
-            <Status on={Boolean(ANALYST_BASE)} onText="פעיל" offText="כבוי" />
-          </li>
-        </ul>
-
-        {coverage.data && (
-          <>
-            <h4 className="set__subhead">כיסוי נתוני המונדיאל</h4>
-            <ul className="set__conn">
-              {COVERAGE_HE.map(({ key, label }) => (
-                <li key={key}>
-                  <span>{label}</span>
-                  <Status on={coverage.data![key]} onText="זמין" offText="לא זמין" />
-                </li>
-              ))}
-            </ul>
-            <p className="set__hint">
-              נתונים ש"לא זמינים" כרגע (כמו פציעות) מתחברים אוטומטית ברגע שה-API יתחיל לספק אותם — אין
-              צורך בפעולה.
-            </p>
-          </>
-        )}
-
-        <p className="set__hint">המפתחות חיים בשרת הפונקציות בלבד — לעולם לא בדפדפן.</p>
-      </section>
-
-      <section className="panel set">
-        <h3 className="set__title">
-          ניחושים שמורים <span className="set__count num">{picks.length}</span>
-        </h3>
+        <div className="set__titlerow">
+          <h3 className="set__title">
+            ניחושים שמורים <span className="set__count num">{picks.length}</span>
+          </h3>
+          {picks.length > 0 && (
+            <button type="button" className="set__clear" onClick={onClearPicks}>
+              נקה הכל
+            </button>
+          )}
+        </div>
         {picks.length === 0 ? (
           <p className="set__empty">
             עדיין לא שמרת ניחושים. במסך משחק לחץ <strong>"שמור ניחוש"</strong> על ההצעה שבחרת — היא
@@ -217,6 +197,42 @@ export function Settings() {
         )}
       </section>
 
+      <h3 className="set-cat">נתונים וחיבור</h3>
+      <section className="panel set">
+        <h3 className="set__title">מצב הנתונים</h3>
+        <ul className="set__conn">
+          <li>
+            <span>פרוקסי API</span>
+            <Status on={Boolean(API_BASE)} onText="מחובר" offText="ישיר" />
+          </li>
+          <li>
+            <span>אנליסט Claude</span>
+            <Status on={Boolean(ANALYST_BASE)} onText="פעיל" offText="כבוי" />
+          </li>
+        </ul>
+
+        {coverage.data && (
+          <>
+            <h4 className="set__subhead">כיסוי נתוני המונדיאל</h4>
+            <ul className="set__conn">
+              {COVERAGE_HE.map(({ key, label }) => (
+                <li key={key}>
+                  <span>{label}</span>
+                  <Status on={coverage.data![key]} onText="זמין" offText="לא זמין" />
+                </li>
+              ))}
+            </ul>
+            <p className="set__hint">
+              נתונים ש"לא זמינים" כרגע (כמו פציעות) מתחברים אוטומטית ברגע שה-API יתחיל לספק אותם — אין
+              צורך בפעולה.
+            </p>
+          </>
+        )}
+
+        <p className="set__hint">המפתחות חיים בשרת הפונקציות בלבד — לעולם לא בדפדפן.</p>
+      </section>
+
+      <h3 className="set-cat">פרטיות והתמדה</h3>
       <section className="panel set">
         <h3 className="set__title">התמדה ואופליין</h3>
         <p className="set__hint">

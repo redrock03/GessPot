@@ -32,6 +32,7 @@ interface AppState {
   setPoolPoints: (n: number) => void;
   savePick: (p: SavedPick) => void;
   removePick: (fixtureId: number) => void;
+  clearPicks: () => void;
 }
 
 const clamp01 = (x: number): number => Math.max(0, Math.min(1, x));
@@ -55,6 +56,7 @@ export const useAppStore = create<AppState>()(
           delete next[fixtureId];
           return { savedPicks: next };
         }),
+      clearPicks: () => set({ savedPicks: {} }),
     }),
     {
       name: 'gesspot-prefs',

@@ -280,3 +280,42 @@
   letter-spacing: 0.04em;
   color: var(--text-mute);
 }
+
+/* --- היררכיה: כותרות קטגוריה + שורת-כותרת עם פעולה --- */
+.set-cat {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin: var(--sp-8) 2px var(--sp-4);
+  font-size: var(--fs-label);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+}
+.set-cat::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+.set-cat:first-of-type {
+  margin-top: var(--sp-2);
+}
+.set__titlerow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+.set__clear {
+  border: none;
+  background: none;
+  color: var(--text-mute);
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  cursor: pointer;
+  transition: color var(--dur) var(--ease);
+}
+.set__clear:hover {
+  color: var(--away);
+}
