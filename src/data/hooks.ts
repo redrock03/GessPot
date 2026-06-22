@@ -5,6 +5,7 @@ import {
   getCurrentRound,
   getHeadToHead,
   getLeagueCoverage,
+  getOdds,
   getPrediction,
   getStandings,
   getTeamPlayers,
@@ -69,19 +70,24 @@ export function usePrediction(fixtureId: number | undefined) {
  * מודיעין מועשר לשתי הנבחרות (§9–§10): כושר, ממוצעי שערים, ראש-בראש,
  * וניתוח סגל (התנהגות + במרחק-כרטיס + שחקני מפתח). מזין את האנליסט ואת ה-UI.
  */
-export function useMatchEnrichment(homeId: number | undefined, awayId: number | undefined) {
+export function useMatchEnrichment(
+  fixtureId: number | undefined,
+  homeId: number | undefined,
+  awayId: number | undefined,
+) {
   return useQuery({
-    queryKey: ['enrichment', homeId, awayId],
-    enabled: homeId !== undefined && awayId !== undefined,
+    queryKey: ['enrichment', fixtureId, homeId, awayId],
+    enabled: fixtureId !== undefined && homeId !== undefined && awayId !== undefined,
     staleTime: 30 * 60_000,
     queryFn: async (): Promise<MatchEnrichment> => {
       // allSettled — כשל בקריאה אחת (coverage משתנה ממשחק למשחק, §7) מנוון רק את אותו חלק.
-      const [hStats, aStats, h2h, hPlayers, aPlayers] = await Promise.allSettled([
+      const [hStats, aStats, h2h, hPlayers, aPlayers, odds] = await Promise.allSettled([
         getTeamStatistics(homeId!),
         getTeamStatistics(awayId!),
         getHeadToHead(homeId!, awayId!),
         getTeamPlayers(homeId!),
         getTeamPlayers(awayId!),
+        getOdds(fixtureId!),
       ]);
       const ok = <T,>(r: PromiseSettledResult<T>, fallback: T): T =>
         r.status === 'fulfilled' ? r.value : fallback;
@@ -91,6 +97,7 @@ export function useMatchEnrichment(homeId: number | undefined, awayId: number | 
         ok(aStats, {}),
         ok(aPlayers, []),
         ok(h2h, []),
+        ok(odds, []),
       );
     },
   });

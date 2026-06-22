@@ -47,13 +47,15 @@ export function MatchContext({
   homeName: string;
   awayName: string;
 }) {
-  const { home, away, h2h } = enrichment;
+  const { home, away, h2h, market } = enrichment;
   const risks = [
     ...home.oneFromBan.map((n) => ({ name: n, team: homeName })),
     ...away.oneFromBan.map((n) => ({ name: n, team: awayName })),
   ];
+  const pct = (p: number) => `${Math.round(p * 100)}%`;
   const hasForm = Boolean(home.form || away.form);
-  const empty = !hasForm && h2h.length === 0 && risks.length === 0 && home.keyPlayers.length === 0;
+  const empty =
+    !hasForm && !market && h2h.length === 0 && risks.length === 0 && home.keyPlayers.length === 0;
 
   return (
     <section className="ctx" aria-label="מודיעין">
@@ -76,6 +78,26 @@ export function MatchContext({
                 <strong className="ctx-warn__title">במרחק כרטיס מהשעיה</strong>
                 <span className="ctx-warn__names">
                   {risks.map((r) => `${r.name} (${r.team})`).join(' · ')}
+                </span>
+              </div>
+            </div>
+          )}
+
+          {market && (
+            <div className="ctx-market">
+              <h3 className="ctx__sub">שוק ההימורים · קונצנזוס סוכנויות</h3>
+              <div className="ctx-market__row">
+                <span className="ctx-market__cell">
+                  <b className="num">{pct(market.home)}</b>
+                  <span>{homeName}</span>
+                </span>
+                <span className="ctx-market__cell">
+                  <b className="num">{pct(market.draw)}</b>
+                  <span>תיקו</span>
+                </span>
+                <span className="ctx-market__cell">
+                  <b className="num">{pct(market.away)}</b>
+                  <span>{awayName}</span>
                 </span>
               </div>
             </div>

@@ -8,6 +8,7 @@ import {
   injuryItemSchema,
   leagueItemSchema,
   lineupItemSchema,
+  oddsItemSchema,
   playerItemSchema,
   predictionItemSchema,
   roundItemSchema,
@@ -19,6 +20,7 @@ import {
   type InjuryItem,
   type LeagueItem,
   type LineupItem,
+  type OddsItem,
   type PlayerItem,
   type PredictionItem,
   type StandingsItem,
@@ -86,4 +88,9 @@ export function getHeadToHead(homeId: number, awayId: number): Promise<FixtureIt
 /** סטטיסטיקות משחק — xG, בעיטות, החזקה. */
 export function getFixtureStatistics(fixtureId: number): Promise<StatisticsItem[]> {
   return apiGet('/fixtures/statistics', statisticsItemSchema, { fixture: fixtureId });
+}
+
+/** ליינים של סוכנויות — שוק 1X2 (bet=1 "Match Winner"). */
+export function getOdds(fixtureId: number): Promise<OddsItem[]> {
+  return apiGet('/odds', oddsItemSchema, { fixture: fixtureId, bet: 1 });
 }

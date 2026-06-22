@@ -261,3 +261,21 @@ export const statisticsItemSchema = z.object({
   ),
 });
 export type StatisticsItem = z.infer<typeof statisticsItemSchema>;
+
+// --- /odds?fixture={id}&bet=1 — ליינים של סוכנויות (1X2 = "Match Winner") ---
+export const oddsItemSchema = z.object({
+  bookmakers: z.array(
+    z.object({
+      id: z.number().optional(),
+      name: z.string().optional(),
+      bets: z.array(
+        z.object({
+          id: z.number().optional(),
+          name: z.string().optional(),
+          values: z.array(z.object({ value: z.string(), odd: z.string() })),
+        }),
+      ),
+    }),
+  ),
+});
+export type OddsItem = z.infer<typeof oddsItemSchema>;

@@ -1,8 +1,14 @@
 // העשרת המודיעין למסך המשחק (CLAUDE.md §9–§10): כושר, ממוצעי שערים, ראש-בראש,
 // וניתוח סגל (התנהגות + "במרחק כרטיס מהשעיה" + שחקני מפתח). גבול → domain.
-import type { FixtureItem, PlayerItem, TeamStats } from '../api/schemas';
+import type { FixtureItem, OddsItem, PlayerItem, TeamStats } from '../api/schemas';
 import { analyzeSquad, type SquadPlayer } from '../domain/engine/absences';
 import { statusToState } from './stage';
+
+export interface MarketProbs {
+  home: number;
+  draw: number;
+  away: number;
+}
 
 export interface TeamEnrichment {
   /** מחרוזת כושר אחרונה, למשל "WWDLW". */
@@ -21,6 +27,8 @@ export interface MatchEnrichment {
   away: TeamEnrichment;
   /** תוצאות ראש-בראש אחרונות, חדש→ישן. */
   h2h: string[];
+  /** הסתברויות שוק (consensus סוכנויות, אחרי הסרת vig). */
+  market?: MarketProbs;
 }
 
 const num = (s?: string | null): number | undefined => {
@@ -73,16 +81,50 @@ export function h2hSummary(fixtures: FixtureItem[], limit = 5): string[] {
     );
 }
 
+/**
+ * הסתברויות שוק מ-consensus סוכנויות: לכל בוקמייקר ממירים את שוק ה-1X2
+ * (Match Winner) להסתברויות מרומזות (1/יחס) ומסירים את ה-vig (נרמול לסכום 1),
+ * ואז ממצעים על פני כל הסוכנויות. מחזיר undefined אם אין נתונים תקפים.
+ */
+export function marketProbs(items: OddsItem[]): MarketProbs | undefined {
+  const item = items[0];
+  if (!item) return undefined;
+  const acc = { home: 0, draw: 0, away: 0 };
+  let count = 0;
+  for (const bm of item.bookmakers) {
+    const mw = bm.bets.find((b) => b.id === 1 || b.name === 'Match Winner') ?? bm.bets[0];
+    if (!mw) continue;
+    const odd = (v: string) => num(mw.values.find((x) => x.value === v)?.odd);
+    const h = odd('Home');
+    const d = odd('Draw');
+    const a = odd('Away');
+    if (!h || !d || !a) continue;
+    const ih = 1 / h;
+    const id = 1 / d;
+    const ia = 1 / a;
+    const sum = ih + id + ia;
+    if (sum <= 0) continue;
+    acc.home += ih / sum;
+    acc.draw += id / sum;
+    acc.away += ia / sum;
+    count += 1;
+  }
+  if (count === 0) return undefined;
+  return { home: acc.home / count, draw: acc.draw / count, away: acc.away / count };
+}
+
 export function buildEnrichment(
   homeStats: TeamStats,
   homePlayers: PlayerItem[],
   awayStats: TeamStats,
   awayPlayers: PlayerItem[],
   h2h: FixtureItem[],
+  odds: OddsItem[] = [],
 ): MatchEnrichment {
   return {
     home: teamEnrichment(homeStats, homePlayers),
     away: teamEnrichment(awayStats, awayPlayers),
     h2h: h2hSummary(h2h),
+    market: marketProbs(odds),
   };
 }

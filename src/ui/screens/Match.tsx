@@ -53,7 +53,7 @@ export function Match() {
 
   const predQ = usePrediction(id);
   const standingsQ = useStandings();
-  const enrichQ = useMatchEnrichment(fixture?.home.id, fixture?.away.id);
+  const enrichQ = useMatchEnrichment(id, fixture?.home.id, fixture?.away.id);
 
   // הגדרות + ניחושים שמורים (M6).
   const riskAlpha = useAppStore((s) => s.riskAlpha);
@@ -116,6 +116,7 @@ export function Match() {
       homeStats: statsOf('home'),
       awayStats: statsOf('away'),
       h2h: enrich?.h2h,
+      odds: enrich?.market,
       stakes: stakesText,
       notes: stakesInfo?.stakes.note || undefined,
     };
