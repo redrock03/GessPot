@@ -36,7 +36,7 @@ export function AppShell() {
         />
         <div>
           <h1 className="app__title">GessPot</h1>
-          <p className="app__subtitle">מוצר משלים ל-PTDIAL</p>
+          <p className="app__subtitle">מוצר משלים ל Potdial</p>
         </div>
       </header>
 

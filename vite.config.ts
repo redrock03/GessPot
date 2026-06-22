@@ -18,7 +18,7 @@ export default defineConfig(({ command }) => {
         manifest: {
           name: 'GessPot',
           short_name: 'GessPot',
-          description: 'מוצר משלים ל-PTDIAL',
+          description: 'מוצר משלים ל Potdial',
           lang: 'he',
           dir: 'rtl',
           theme_color: '#0b1020',
