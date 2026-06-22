@@ -1,5 +1,7 @@
 # מוקד הניחושים — Mundial Predictor PWA
 
+**האפליקציה החיה:** https://redrock03.github.io/GessPot/ — נפתחת בנייד, "הוסף למסך הבית" כדי להתקין כ-PWA.
+
 כלי חיזוי **אישי** למונדיאל 2026. לכל משחק האפליקציה לא רק מנבאת — היא מציגה **שתי הצעות מקבילות**:
 
 - **הצעת כיוון** — התוצאה שממקסמת את הסיכוי לקלוע לפחות לכיוון (הדרך הבטוחה לנקודה).
@@ -35,3 +37,8 @@ npm run dev
 | `npm run lint` | eslint |
 
 המפתחות (Anthropic / API-Football) חיים אך ורק ב-secrets של פונקציות הקצה — לעולם לא ב-bundle של הלקוח.
+
+## פריסה (GitHub Pages)
+
+האתר מתארח ב-GitHub Pages תחת `/GessPot/` (ראו `base` ב-[vite.config.ts](vite.config.ts), hash-router). פריסה: `npm run build` ואז דחיפת `dist/` לענף `gh-pages`. פונקציות הקצה מוקשחות — `ALLOWED_ORIGIN` מצומצם למקורות מורשים (פרודקשן + localhost) ופונקציית האנליסט דורשת header `x-app-secret`. הגנת-העלות האמיתית: תקרת-הוצאה ב-Anthropic + cache פר-משחק.
+

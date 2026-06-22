@@ -7,17 +7,27 @@
 
 const ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
 const ANTHROPIC_KEY = Deno.env.get('ANTHROPIC_KEY') ?? '';
-const ALLOWED_ORIGIN = Deno.env.get('ALLOWED_ORIGIN') ?? '*';
-const APP_SHARED_SECRET = Deno.env.get('APP_SHARED_SECRET') ?? ''; // אם מוגדר — נדרש header תואם
+const APP_SHARED_SECRET = Deno.env.get('APP_SHARED_SECRET') ?? ''; // אם מוגדר — נדרש header x-app-secret תואם
 
 const MODEL = 'claude-opus-4-8';
 
-const cors: Record<string, string> = {
-  'access-control-allow-origin': ALLOWED_ORIGIN,
-  'access-control-allow-methods': 'POST, OPTIONS',
-  'access-control-allow-headers': 'authorization, content-type, apikey, x-app-secret',
-  'access-control-max-age': '86400',
-};
+// רשימת מקורות מורשים (מופרדת בפסיקים) — פיתוח (localhost) + פרודקשן (github.io). '*' = פתוח.
+const ALLOWED = (Deno.env.get('ALLOWED_ORIGIN') ?? '*')
+  .split(',')
+  .map((s) => s.trim())
+  .filter(Boolean);
+
+function corsFor(req: Request): Record<string, string> {
+  const origin = req.headers.get('origin') ?? '';
+  const allowOrigin = ALLOWED.includes('*') ? '*' : ALLOWED.includes(origin) ? origin : ALLOWED[0] ?? '';
+  return {
+    'access-control-allow-origin': allowOrigin,
+    vary: 'Origin',
+    'access-control-allow-methods': 'POST, OPTIONS',
+    'access-control-allow-headers': 'authorization, content-type, apikey, x-app-secret',
+    'access-control-max-age': '86400',
+  };
+}
 
 // סכמת הפלט המובנה — structured outputs לא תומך min/max, לכן מנרמלים/חוסמים בקוד אח"כ.
 const SCHEMA = {
@@ -53,18 +63,18 @@ const SYSTEM = `אתה אנליסט-על לכדורגל המתמחה במונד�
 היה מכויל: expectedGoals ריאליסטיים (בד"כ 0.4–2.6 לכל צד), ו-oneXtwo שמסתכם ל-1 ועקבי עם השערים הצפויים.
 כתוב keyFactors (2–4 פריטים) ו-rationale קצר — בעברית בלבד. החזר אך ורק את האובייקט המובנה.`;
 
-function json(payload: unknown, status: number): Response {
-  return new Response(JSON.stringify(payload), {
-    status,
-    headers: { ...cors, 'content-type': 'application/json; charset=utf-8' },
-  });
-}
-
 function clamp(x: number, lo: number, hi: number): number {
   return Math.min(hi, Math.max(lo, x));
 }
 
 Deno.serve(async (req: Request): Promise<Response> => {
+  const cors = corsFor(req);
+  const json = (payload: unknown, status: number): Response =>
+    new Response(JSON.stringify(payload), {
+      status,
+      headers: { ...cors, 'content-type': 'application/json; charset=utf-8' },
+    });
+
   if (req.method === 'OPTIONS') return new Response(null, { headers: cors });
   if (req.method !== 'POST') return json({ error: 'method not allowed' }, 405);
   if (!ANTHROPIC_KEY) return json({ error: 'ANTHROPIC_KEY missing in function secrets' }, 500);

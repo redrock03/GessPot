@@ -16,8 +16,9 @@
 - **M5 ✅ הושלם ואומת:** `history.ts` (כושר משוקלל לפי עדכניות×עוצמת-יריב + גובה/מנוחה) · `absences.ts` (התנהגות פייר-פליי §8 מדויק כולל אדום-עקיף 3−, `analyzeSquad` חשיבות+"במרחק כרטיס") · שכבת נתונים (players/teams-statistics/h2h/statistics + `apiGetObject`) · `mappers/enrichment.ts` + `useMatchEnrichment` (allSettled) → מזין כושר/h2h/סגל לאנליסט **(אומת חי: Claude מצטט שחקני-מפתח+h2h+ממוצעי שערים)** · פאנל "מודיעין" במסך המשחק (כושר/מפתח/התרעת השעיה/h2h). **108 בדיקות.** סקירה אדוורסרית (Workflow, 9 סוכנים) → 6 ממצאים תוקנו.
 - **תיקון UX (רן):** Fixtures — משחקים שהסתיימו יורדים מתחת למחיצת "תוצאות" (מעומעמים); חיים+קרובים תמיד למעלה (הבא ביותר ראשון).
 - **M6 ✅ הושלם ואומת:** `state/store.ts` (zustand+persist ל-localStorage: `riskAlpha` + `savedPicks`) · `recommendByRisk` (חוגת-סיכון §4) במנוע + בדיקות · מסך הגדרות (חוגת-סיכון, סטטוס חיבור, יומן ניחושים שמורים, אופליין) · שמירת ניחוש + badge "מומלץ לך" במסך המשחק · באנר אופליין ב-AppShell. **113 בדיקות.** אומת ויזואלית.
-- **dev server רץ** (localhost:5173, רקע, HMR) לצפיית רן בזמן הפיתוח.
-- **הצעד הבא:** **קומיט + ריפו GitHub פומבי** (סקרבנו את ה-project-ref מ-MEMORY) · M7 (פריסה לפלאפון; לפני פרוד — `ALLOWED_ORIGIN` מצומצם + `APP_SHARED_SECRET`) · נדחים: M4.5 (R32 seeding 495), conduct→דירוג הבתים (כרגע 0), xG/odds פר-משחק.
+- **M7 ✅ הושלם — האפליקציה חיה:** **https://redrock03.github.io/GessPot/** (GitHub Pages, ענף `gh-pages`). הוקשח: `ALLOWED_ORIGIN` allowlist (github.io + localhost) בשתי הפונקציות, `claude-analyst` דורש `x-app-secret` (401 בלעדיו — אומת). Vite `base=/GessPot/` + hash-router (עמיד בתת-נתיב). אומת חי: האתר טוען נתונים אמיתיים מהפרוקסי המוקשח (screenshot). מותקן כ-PWA.
+- **dev server רץ** (localhost:5173, רקע, HMR) — עדיין עובד (localhost ב-allowlist).
+- **הצעד הבא:** הכל הושלם (M0–M7). שיפורים אופציונליים: תקרת-הוצאה ב-Anthropic (הגנת-עלות אמיתית) · M4.5 (R32 seeding 495) · conduct→דירוג הבתים (כרגע 0) · xG/odds פר-משחק.
 
 ---
 
@@ -150,6 +151,13 @@
 - **בדיקות:** 113 (כולל 5 ל-recommendByRisk). typecheck/lint/build נקיים. אומת ויזואלית (Edge).
 - **אבטחה לקראת ריפו פומבי:** סקרבנו את ה-project-ref מ-MEMORY.md (3 מקומות) → אין URL קריא לפונקציות. אין מפתחות בקוד; `.env.local` ב-gitignore; אין היסטוריית git לנקות (קומיט ראשון). תזכורת ל-M7: לצמצם `ALLOWED_ORIGIN` ולהוסיף `APP_SHARED_SECRET`.
 
+### 2026-06-22 — M7: הקשחה + פריסה לפלאפון → M7 הושלם, האפליקציה חיה
+
+- **הקשחה:** שתי הפונקציות עברו ל-`ALLOWED_ORIGIN` כ-allowlist (מופרד בפסיקים, `corsFor(req)` מחזיר את ה-origin רק אם מורשה) = `https://redrock03.github.io,http://localhost:5173`. `claude-analyst` דורש header `x-app-secret` מול `APP_SHARED_SECRET` (אומת: 401 בלי/עם-שגוי, 200 עם נכון). הלקוח (`api/analyst.ts`) שולח `x-app-secret` מ-`VITE_APP_SECRET`. הסוד ב-`.env.local` (gitignore) וב-secrets של הפונקציה — לא בריפו. (הסוד מופיע ב-bundle הציבורי בפועל; ההגנה האמיתית מול עלות = תקרת-Anthropic + cache.)
+- **GitHub Pages:** `vite.config.ts` → `base = command==='build' ? '/GessPot/' : '/'`; manifest start_url/scope=`/GessPot/`; `createHashRouter` (עמיד בתת-נתיב, ללא 404 fallback). build → דחיפת `dist/` (עם `.nojekyll`) לענף `gh-pages`; Pages מוגדר source=gh-pages/.
+- **אומת חי:** `https://redrock03.github.io/GessPot/` → 200, נטען ומציג fixtures אמיתיים (screenshot) — כלומר ה-origin הפרוס קורא בהצלחה לפונקציות המוקשחות. PWA מותקן (manifest+SW, HTTPS).
+- **לפריסה חוזרת:** `npm run build` → `cd dist && git init && git add -A && git commit && git push -f <repo> gh-pages`. הפונקציות: `supabase functions deploy <name> --no-verify-jwt --project-ref <ref>` (token ב-memory).
+
 ### היסטוריה רלוונטית (טרום-ריפו)
 
 - נבנה ארטיפקט הוכחת-היתכנות (React) עם מנוע Poisson + ממקסם תוחלת — אימת שהמתמטיקה תקינה ושההמלצה האופטימלית שונה מהתוצאה הסבירה. הלוגיקה הזו תועתק ל-`domain/engine`.
@@ -174,7 +182,7 @@
 | M4  | מנוע ההעפלה המלא                     | ✅ הושלם ואומת                  |
 | M5  | היעדרויות + היסטוריה                 | ✅ הושלם ואומת (108 בדיקות, סקירה אדוורסרית) |
 | M6  | הגדרות, התמדה, ליטוש                 | ✅ הושלם ואומת (113 בדיקות)               |
-| M7  | פריסה                                | ☐ לא התחיל                               |
+| M7  | פריסה                                | ✅ חי: redrock03.github.io/GessPot/        |
 
 ---
 

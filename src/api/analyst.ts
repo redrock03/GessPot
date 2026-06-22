@@ -1,7 +1,7 @@
 // לקוח לפונקציית האנליסט (claude-analyst) — חצי הלקוח של המנוע ההיברידי (CLAUDE.md §4 / מנוע 0).
 // שולח חבילת סטטיסטיקות, מקבל תחזית מכוילת ומאומתת (zod). ה-λ מוזן למנוע הטהור בשכבת data/.
 import { z } from 'zod';
-import { ANALYST_BASE } from '../config';
+import { ANALYST_BASE, APP_SECRET } from '../config';
 import type { AnalystPrediction, Stage } from '../domain/types';
 import { ApiError } from './errors';
 
@@ -40,11 +40,14 @@ export async function getAnalystPrediction(input: AnalystInput): Promise<Analyst
     throw new ApiError('api', 'מנוע האנליסט כבוי (VITE_ANALYST_BASE לא מוגדר)');
   }
 
+  const headers: Record<string, string> = { 'content-type': 'application/json' };
+  if (APP_SECRET) headers['x-app-secret'] = APP_SECRET;
+
   let res: Response;
   try {
     res = await fetch(ANALYST_BASE, {
       method: 'POST',
-      headers: { 'content-type': 'application/json' },
+      headers,
       body: JSON.stringify(input),
     });
   } catch (err) {
