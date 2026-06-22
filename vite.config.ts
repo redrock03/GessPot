@@ -16,9 +16,9 @@ export default defineConfig(({ command }) => {
         registerType: 'autoUpdate',
         includeAssets: ['favicon.svg', 'pwa-192.png', 'pwa-512.png'],
         manifest: {
-          name: 'מוקד הניחושים',
-          short_name: 'מוקד',
-          description: 'כלי חיזוי אישי למונדיאל 2026',
+          name: 'GessPot',
+          short_name: 'GessPot',
+          description: 'מוצר משלים ל-PTDIAL',
           lang: 'he',
           dir: 'rtl',
           theme_color: '#0b1020',

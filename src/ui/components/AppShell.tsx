@@ -35,8 +35,8 @@ export function AppShell() {
           aria-hidden="true"
         />
         <div>
-          <h1 className="app__title">מוקד הניחושים</h1>
-          <p className="app__subtitle">חיזוי מונדיאל 2026</p>
+          <h1 className="app__title">GessPot</h1>
+          <p className="app__subtitle">מוצר משלים ל-PTDIAL</p>
         </div>
       </header>
 
