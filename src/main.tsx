@@ -6,6 +6,7 @@ import { registerSW } from 'virtual:pwa-register';
 import { queryClient } from './data/queryClient';
 import { createIdbPersister } from './data/persister';
 import { router } from './router';
+import { Splash } from './ui/components/Splash';
 import './ui/global.css';
 
 const rootEl = document.getElementById('root');
@@ -15,6 +16,7 @@ const persister = createIdbPersister();
 
 createRoot(rootEl).render(
   <StrictMode>
+    <Splash />
     <PersistQueryClientProvider
       client={queryClient}
       persistOptions={{ persister, maxAge: 24 * 60 * 60_000, buster: 'v1' }}

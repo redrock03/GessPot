@@ -1,0 +1,101 @@
+/* אנימציית כניסה — Redrock Studio. סטראטת-סלע (mesa) + wordmark, על רקע המוצר. */
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: grid;
+  place-items: center;
+  background: var(--bg, #0a0e16);
+  opacity: 1;
+  transition: opacity 0.55s var(--ease);
+  cursor: pointer;
+}
+.splash.is-out {
+  opacity: 0;
+}
+.splash.is-out .splash__inner {
+  transform: scale(1.05);
+  transition: transform 0.55s var(--ease);
+}
+
+.splash__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+/* mesa — שלוש שכבות-סלע בצמצום, בגווני אדום-רוק */
+.splash__mark {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 8px;
+}
+.splash__bar {
+  height: 7px;
+  border-radius: 4px;
+  opacity: 0;
+  transform: translateY(10px) scaleX(0.7);
+  transform-origin: center;
+  animation: sp-bar 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.splash__bar:nth-child(1) {
+  width: 34px;
+  background: #e8764f;
+  animation-delay: 0.05s;
+}
+.splash__bar:nth-child(2) {
+  width: 52px;
+  background: #d6452f;
+  animation-delay: 0.16s;
+}
+.splash__bar:nth-child(3) {
+  width: 70px;
+  background: #ab331d;
+  animation-delay: 0.27s;
+}
+@keyframes sp-bar {
+  to {
+    opacity: 1;
+    transform: translateY(0) scaleX(1);
+  }
+}
+
+.splash__word {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: #f3efe9;
+  opacity: 0;
+  transform: translateY(12px);
+  animation: sp-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.4s forwards;
+}
+.splash__sub {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5em;
+  /* היסט לאיזון ה-letter-spacing מימין */
+  padding-inline-start: 0.5em;
+  color: #a3837a;
+  opacity: 0;
+  animation: sp-fade 0.6s var(--ease) 0.62s forwards;
+}
+@keyframes sp-up {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes sp-fade {
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .splash {
+    display: none;
+  }
+}
