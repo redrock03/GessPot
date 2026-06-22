@@ -28,7 +28,12 @@ export function AppShell() {
   return (
     <div className="app">
       <header className="app__header">
-        <img className="app__logo" src="/favicon.svg" alt="" aria-hidden="true" />
+        <img
+          className="app__logo"
+          src={`${import.meta.env.BASE_URL}favicon.svg`}
+          alt=""
+          aria-hidden="true"
+        />
         <div>
           <h1 className="app__title">מוקד הניחושים</h1>
           <p className="app__subtitle">חיזוי מונדיאל 2026</p>
