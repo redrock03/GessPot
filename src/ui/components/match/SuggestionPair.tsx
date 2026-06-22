@@ -1,6 +1,6 @@
 import type { MatchAdvice, Suggestion } from '../../../domain/types';
 import { ExactIcon, ConvergeIcon, TendencyIcon } from './icons';
-import { ev2, outcomeSideName, pct } from './format';
+import { directionLabel, ev2, outcomeSideName, pct } from './format';
 import './suggestion-pair.css';
 
 type Kind = 'tendency' | 'exact';
@@ -70,7 +70,8 @@ function SaveFoot({
 function Card({
   kind,
   s,
-  side,
+  homeName,
+  awayName,
   recommended,
   saved,
   onSave,
@@ -78,13 +79,15 @@ function Card({
 }: {
   kind: Kind;
   s: Suggestion;
-  side: string;
+  homeName: string;
+  awayName: string;
   recommended: boolean;
   saved: boolean;
   onSave?: (kind: Kind) => void;
   onRemove?: () => void;
 }) {
   const isTendency = kind === 'tendency';
+  const dir = directionLabel(s.score.home, s.score.away, homeName, awayName);
   return (
     <article
       className={`sg-card sg-card--${isTendency ? 'steady' : 'strike'}${recommended ? ' is-rec' : ''}`}
@@ -93,15 +96,29 @@ function Card({
         <span className="sg-card__icon">{isTendency ? <TendencyIcon /> : <ExactIcon />}</span>
         <div className="sg-card__title">
           <span className="sg-card__kind">{isTendency ? 'כיוון' : 'בול'}</span>
-          <span className="sg-card__tag">{isTendency ? 'הדרך הבטוחה' : 'מלוא הניקוד'}</span>
+          <span className="sg-card__tag">{isTendency ? 'מי מנצח' : 'התוצאה המדויקת'}</span>
         </div>
       </header>
-      <div className="sg-card__score">
-        <span className="sg-card__num num">
-          {s.score.home}–{s.score.away}
-        </span>
-        <span className="sg-card__side">{side}</span>
-      </div>
+
+      {isTendency ? (
+        // כיוון — הצד (נבחרת/תיקו), בלי תוצאה. התוצאה להגשה כרמז משני.
+        <div className="sg-card__dir">
+          {dir.kicker && <span className="sg-card__dir-kicker">{dir.kicker}</span>}
+          <span className="sg-card__dir-team">{dir.team}</span>
+          <span className="sg-card__submit">
+            תוצאה להגשה · {s.score.home}–{s.score.away}
+          </span>
+        </div>
+      ) : (
+        // בול — התוצאה המדויקת.
+        <div className="sg-card__score">
+          <span className="sg-card__num num">
+            {s.score.home}–{s.score.away}
+          </span>
+          <span className="sg-card__side">{dir.team}</span>
+        </div>
+      )}
+
       <DataRows s={s} emphasis={kind} />
       <SaveFoot
         kind={kind}
@@ -160,7 +177,8 @@ export function SuggestionPair({
       <Card
         kind="tendency"
         s={t}
-        side={outcomeSideName(t.score.home, t.score.away, homeName, awayName)}
+        homeName={homeName}
+        awayName={awayName}
         recommended={recommended === 'tendency'}
         saved={savedKind === 'tendency'}
         onSave={onSave}
@@ -169,7 +187,8 @@ export function SuggestionPair({
       <Card
         kind="exact"
         s={e}
-        side={outcomeSideName(e.score.home, e.score.away, homeName, awayName)}
+        homeName={homeName}
+        awayName={awayName}
         recommended={recommended === 'exact'}
         saved={savedKind === 'exact'}
         onSave={onSave}

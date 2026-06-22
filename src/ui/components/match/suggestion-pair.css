@@ -92,6 +92,30 @@
   color: var(--text-dim);
 }
 
+/* כיוון — מובילים בנבחרת (מי מנצח), לא בתוצאה. */
+.sg-card__dir {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.sg-card__dir-kicker {
+  font-size: var(--fs-meta);
+  font-weight: var(--fw-label);
+  color: var(--text-mute);
+}
+.sg-card__dir-team {
+  font-size: var(--fs-h1);
+  font-weight: var(--fw-h2);
+  line-height: 1.1;
+  color: var(--text);
+}
+.sg-card__submit {
+  margin-top: var(--sp-2);
+  font-size: var(--fs-micro);
+  color: var(--text-mute);
+  font-variant-numeric: tabular-nums;
+}
+
 .sg-data {
   display: flex;
   flex-direction: column;

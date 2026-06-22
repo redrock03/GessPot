@@ -25,3 +25,15 @@ export function outcomeSideName(
   if (home < away) return awayName;
   return 'תיקו';
 }
+
+/** תווית כיוון: כותרת-משנה ("ניצחון" / ריק לתיקו) + הצד (נבחרת או "תיקו"). */
+export function directionLabel(
+  home: number,
+  away: number,
+  homeName: string,
+  awayName: string,
+): { kicker: string; team: string } {
+  const o = outcomeOf(home, away);
+  if (o === 'draw') return { kicker: '', team: 'תיקו' };
+  return { kicker: 'ניצחון', team: o === 'home' ? homeName : awayName };
+}
