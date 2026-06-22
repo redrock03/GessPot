@@ -1,0 +1,84 @@
+/* פאנל ניתוח האנליסט — confidence + key factors + rationale. */
+.analyst {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.analyst__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+.analyst__by {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-label);
+  font-weight: var(--fw-label);
+  letter-spacing: 0.02em;
+  color: var(--text-dim);
+}
+.analyst__by-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--steady);
+}
+.analyst__conf {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-meta);
+  color: var(--text-dim);
+}
+.analyst__meter {
+  display: inline-flex;
+  gap: 2px;
+}
+.analyst__seg {
+  width: 12px;
+  height: 5px;
+  border-radius: 2px;
+  background: var(--line);
+}
+.analyst__seg.is-on {
+  background: var(--steady);
+}
+
+.analyst__factors {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+.analyst__factors li {
+  position: relative;
+  padding-inline-start: var(--sp-5);
+  font-size: var(--fs-body);
+  color: var(--text);
+}
+.analyst__factors li::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: 0.5em;
+  width: 5px;
+  height: 5px;
+  border-radius: 1px;
+  transform: rotate(45deg);
+  background: var(--steady);
+}
+
+.analyst__rationale {
+  margin: 0;
+  padding-top: var(--sp-3);
+  border-top: var(--bd);
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  color: var(--text-dim);
+  max-width: 68ch;
+}

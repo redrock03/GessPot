@@ -1,0 +1,76 @@
+/* מד 1X2 (DESIGN.md §4.2) — מקטעים בצבעי-מהות, אחוז mono כהה במרכז. */
+.prob {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.prob-bar {
+  display: flex;
+  gap: 2px;
+  height: 32px;
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+.prob-seg {
+  display: grid;
+  place-items: center;
+  min-width: 3px;
+  overflow: hidden;
+  font-size: var(--fs-meta);
+  font-weight: 700;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.prob-seg--home {
+  background: var(--home);
+}
+.prob-seg--draw {
+  background: var(--draw);
+}
+.prob-seg--away {
+  background: var(--away);
+}
+
+.prob-legend {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+.prob-leg {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-meta);
+  color: var(--text-dim);
+}
+.prob-leg .num {
+  color: var(--text);
+  font-weight: var(--fw-label);
+}
+.prob-leg__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+}
+/* תוויות בצבעי-מהות (DESIGN.md §4.2). */
+.prob-leg--home {
+  color: var(--home);
+}
+.prob-leg--draw {
+  color: var(--draw);
+}
+.prob-leg--away {
+  color: var(--away);
+}
+.prob-leg--home .prob-leg__dot {
+  background: var(--home);
+}
+.prob-leg--draw .prob-leg__dot {
+  background: var(--draw);
+}
+.prob-leg--away .prob-leg__dot {
+  background: var(--away);
+}

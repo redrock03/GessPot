@@ -1,0 +1,130 @@
+/* מפת-החום (DESIGN.md §4.3) — alpha=0.07+0.86·(p/pMax), צבע לפי מהות, סימוני כיוון/בול. */
+.coupon {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.coupon__cap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  font-size: var(--fs-h2);
+  font-weight: var(--fw-h2);
+}
+.coupon__axes {
+  display: inline-flex;
+  gap: var(--sp-3);
+  font-size: var(--fs-micro);
+  font-weight: var(--fw-meta);
+}
+.coupon__axis--home {
+  color: var(--home);
+}
+.coupon__axis--away {
+  color: var(--away);
+}
+
+.coupon__grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 5px;
+}
+.coupon__cell {
+  position: relative;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+  color: var(--text);
+  transition:
+    transform var(--dur-fast) var(--ease),
+    box-shadow var(--dur-fast) var(--ease);
+}
+.coupon__cell:hover {
+  transform: scale(1.06);
+}
+.coupon__cell:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--focus);
+}
+/* שבב כהה קבוע מאחורי המספר — ניגודיות ≥4.5:1 בכל עוצמת תא (תיקון P0 a11y). */
+.coupon__score {
+  font-size: var(--fs-meta);
+  font-weight: var(--fw-label);
+  color: var(--text);
+  padding: 1px 4px;
+  border-radius: 4px;
+  background: rgba(8, 11, 18, 0.72);
+}
+
+/* סימון כיוון = טבעת ציאן פנימית */
+.coupon__cell.is-tendency {
+  box-shadow: inset 0 0 0 2px var(--steady);
+}
+/* סימון בול = בולסאיי זהב בפינה */
+.coupon__mark {
+  position: absolute;
+  inset-block-start: 3px;
+  inset-inline-end: 3px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 2px solid var(--strike);
+  background: radial-gradient(circle, var(--strike) 0 1px, transparent 1.5px);
+}
+/* נבחר = טבעת לבנה חיצונית (יכולה לדור עם טבעת הכיוון) */
+.coupon__cell.is-sel {
+  box-shadow: 0 0 0 2px var(--text);
+}
+.coupon__cell.is-sel.is-tendency {
+  box-shadow:
+    0 0 0 2px var(--text),
+    inset 0 0 0 2px var(--steady);
+}
+
+.coupon__readout {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+  min-height: 24px;
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+}
+.coupon__readout-score {
+  font-size: var(--fs-h1);
+  font-weight: var(--fw-score);
+  letter-spacing: -0.02em;
+}
+.coupon__readout-p {
+  font-size: var(--fs-h2);
+  font-weight: var(--fw-label);
+  color: var(--strike);
+}
+.coupon__readout-hint {
+  font-size: var(--fs-meta);
+  color: var(--text-dim);
+}
+
+.coupon__legend {
+  display: flex;
+  gap: var(--sp-5);
+}
+.coupon__leg {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-meta);
+  color: var(--text-dim);
+}
+.coupon__leg--steady {
+  color: var(--steady);
+}
+.coupon__leg--strike {
+  color: var(--strike);
+}

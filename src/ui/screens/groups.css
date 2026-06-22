@@ -1,0 +1,180 @@
+/* מסך הבתים — טבלאות מדורגות (סולם 2026) + מה כל נבחרת צריכה + מרוץ השלישיות. */
+
+.gtable {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.grow {
+  display: grid;
+  grid-template-columns: 26px 1fr auto auto auto;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+}
+.grow + .grow {
+  border-top: var(--bd);
+}
+.grow__rank {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-size: var(--fs-meta);
+  font-weight: var(--fw-label);
+  background: var(--surface-2);
+  color: var(--text-dim);
+}
+.grow__rank--home {
+  background: color-mix(in srgb, var(--home) 22%, var(--surface-2));
+  color: var(--home);
+}
+.grow__rank--draw {
+  background: color-mix(in srgb, var(--draw) 20%, var(--surface-2));
+  color: var(--draw);
+}
+
+.grow__team {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+.grow__team img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  flex: none;
+}
+.grow__name {
+  font-size: var(--fs-body);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.grow__stat {
+  width: 34px;
+  text-align: center;
+  font-size: var(--fs-meta);
+  color: var(--text-dim);
+}
+.grow__pts {
+  width: 26px;
+  text-align: center;
+  font-size: var(--fs-label);
+  font-weight: var(--fw-label);
+}
+
+/* צ'יפ "מה צריך" — ציר מהות (DESIGN.md §4.6): מובטח=אמרלד, גבולי=ענבר, מודחת=ורד. */
+.need-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  flex: none;
+  padding: 1px var(--sp-2);
+  border-radius: var(--r-sm);
+  font-size: var(--fs-micro);
+  font-weight: var(--fw-meta);
+  border: 1px solid transparent;
+}
+.need-chip--home {
+  color: var(--home);
+  background: color-mix(in srgb, var(--home) 12%, transparent);
+  border-color: color-mix(in srgb, var(--home) 30%, transparent);
+}
+.need-chip--draw {
+  color: var(--draw);
+  background: color-mix(in srgb, var(--draw) 12%, transparent);
+  border-color: color-mix(in srgb, var(--draw) 30%, transparent);
+}
+.need-chip--away {
+  color: var(--away);
+  background: color-mix(in srgb, var(--away) 12%, transparent);
+  border-color: color-mix(in srgb, var(--away) 30%, transparent);
+}
+.need-chip--mute {
+  color: var(--text-dim);
+  background: var(--surface-2);
+}
+.need-chip__gd {
+  font-weight: 700;
+  opacity: 0.85;
+}
+
+/* ===== מרוץ השלישיות ===== */
+.thirds {
+  margin-top: var(--sp-8);
+}
+.thirds__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: var(--surface);
+  border: var(--bd);
+  border-radius: var(--r-panel);
+  overflow: hidden;
+}
+.thirds__cut {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2);
+  margin: var(--sp-2) 0;
+  font-size: var(--fs-micro);
+  font-weight: var(--fw-label);
+  letter-spacing: 0.03em;
+  color: var(--strike);
+  background: color-mix(in srgb, var(--strike) 10%, transparent);
+  border-block: 1px dashed color-mix(in srgb, var(--strike) 45%, var(--line));
+}
+.trow {
+  display: grid;
+  grid-template-columns: 24px auto 1fr auto auto;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+}
+.trow.is-out {
+  opacity: 0.55;
+}
+.trow__rank {
+  width: 22px;
+  text-align: center;
+  font-size: var(--fs-meta);
+  font-weight: var(--fw-label);
+  color: var(--text-dim);
+}
+.trow.is-in .trow__rank {
+  color: var(--home);
+}
+.trow__group {
+  font-size: var(--fs-micro);
+  color: var(--text-mute);
+}
+.trow__team {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+  font-size: var(--fs-body);
+}
+.trow__team img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  flex: none;
+}
+.trow__stat {
+  width: 34px;
+  text-align: center;
+  font-size: var(--fs-meta);
+  color: var(--text-dim);
+}
+.trow__pts {
+  width: 24px;
+  text-align: center;
+  font-size: var(--fs-label);
+  font-weight: var(--fw-label);
+}

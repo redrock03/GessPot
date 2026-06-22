@@ -1,0 +1,201 @@
+/* מסך הגדרות — חוגת סיכון, חיבור, ניחושים שמורים, אופליין. */
+.set {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+.set + .set {
+  margin-top: var(--sp-5);
+}
+.set__title {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin: 0;
+  font-size: var(--fs-h2);
+  font-weight: var(--fw-h2);
+  color: var(--text);
+}
+.set__count {
+  font-size: var(--fs-meta);
+  color: var(--text-mute);
+  background: var(--surface-2);
+  border-radius: var(--r-pill);
+  padding: 1px var(--sp-3);
+}
+.set__hint {
+  margin: 0;
+  font-size: var(--fs-meta);
+  line-height: 1.6;
+  color: var(--text-dim);
+  max-width: 64ch;
+}
+
+/* --- חוגת הסיכון --- */
+.set__dial {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--sp-4);
+}
+.set__dial-end {
+  font-size: var(--fs-label);
+  font-weight: 700;
+  color: var(--steady);
+}
+.set__dial-end--strike {
+  color: var(--strike);
+}
+.set__range {
+  width: 100%;
+  height: 4px;
+  border-radius: var(--r-pill);
+  appearance: none;
+  -webkit-appearance: none;
+  background: linear-gradient(90deg, var(--steady), var(--strike));
+  cursor: pointer;
+}
+.set__range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--text);
+  border: 2px solid var(--surface);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.4);
+  cursor: pointer;
+}
+.set__range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--text);
+  border: 2px solid var(--surface);
+  cursor: pointer;
+}
+.set__range:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--focus);
+}
+.set__dial-val {
+  font-size: var(--fs-label);
+  color: var(--text);
+  text-align: center;
+}
+
+/* --- חיבור --- */
+.set__conn {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+.set__conn li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--fs-body);
+  color: var(--text-dim);
+}
+.set-status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  color: var(--text-mute);
+}
+.set-status__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--text-faint);
+}
+.set-status.is-on {
+  color: var(--home);
+}
+.set-status.is-on .set-status__dot {
+  background: var(--home);
+}
+
+/* --- ניחושים שמורים --- */
+.set__empty {
+  margin: 0;
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  color: var(--text-mute);
+  max-width: 64ch;
+}
+.set__picks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+.pick {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--surface-2);
+  border-radius: var(--radius-md);
+}
+.pick__main {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  text-decoration: none;
+}
+.pick__teams {
+  font-size: var(--fs-label);
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pick__meta {
+  font-size: var(--fs-micro);
+  color: var(--text-mute);
+}
+.pick__kind {
+  font-size: var(--fs-micro);
+  font-weight: 700;
+  padding: 2px var(--sp-3);
+  border-radius: var(--r-pill);
+}
+.pick__kind--steady {
+  color: var(--steady);
+  background: color-mix(in srgb, var(--steady) 14%, transparent);
+}
+.pick__kind--strike {
+  color: var(--strike);
+  background: color-mix(in srgb, var(--strike) 14%, transparent);
+}
+.pick__score {
+  font-size: var(--fs-body);
+  font-weight: 700;
+  color: var(--text);
+}
+.pick__del {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--text-mute);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition: color var(--dur) var(--ease);
+}
+.pick__del:hover {
+  color: var(--away);
+}

@@ -1,0 +1,125 @@
+/* מסך המשחק — לב המוצר. פאנלים שקטים סביב זוג ההצעות הנועז. */
+.match {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+/* ===== כותרת המשחק ===== */
+.match__head {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-2) 0 var(--sp-4);
+}
+.match__team {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+.match__crest {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+.match__team-name {
+  font-size: var(--fs-h2);
+  font-weight: var(--fw-h2);
+  text-align: center;
+  line-height: 1.15;
+}
+.match__vs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-align: center;
+}
+/* תג-שלב (DESIGN.md §4.5) — לא צבע ציאן (זה ציר ההצעות), אלא chip ניטרלי. */
+.match__stage {
+  font-size: var(--fs-micro);
+  font-weight: var(--fw-meta);
+  letter-spacing: 0.03em;
+  color: var(--text-dim);
+  background: var(--surface-2);
+  border: var(--bd);
+  border-radius: var(--r-xs);
+  padding: 2px var(--sp-3);
+}
+.match__vs-x {
+  color: var(--text-mute);
+}
+.match__kick {
+  font-size: var(--fs-label);
+  font-weight: var(--fw-label);
+  color: var(--text);
+}
+.match__date {
+  font-size: var(--fs-meta);
+  color: var(--text-dim);
+}
+
+/* ===== פאנלים ===== */
+.panel {
+  background: var(--surface);
+  border: var(--bd);
+  border-radius: var(--r-panel);
+  padding: var(--sp-6);
+}
+.panel--hero {
+  position: relative;
+  padding: var(--sp-5);
+  background: var(--spotlight), var(--surface);
+  border-color: var(--line-soft);
+}
+.panel__title {
+  margin: 0 0 var(--sp-4);
+  font-size: var(--fs-h2);
+  font-weight: var(--fw-h2);
+  color: var(--text-dim);
+}
+
+/* ===== מצב ניתוח (האנליסט רץ ~15ש') ===== */
+.match__analyzing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-8) var(--sp-6);
+  text-align: center;
+  color: var(--text-dim);
+  font-size: var(--fs-label);
+}
+.match__scope {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+}
+.match__scope-ring {
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--steady);
+  border-radius: 50%;
+  animation: scope-pulse 1.5s var(--ease) infinite;
+}
+.match__scope-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--strike);
+}
+@keyframes scope-pulse {
+  0% {
+    transform: scale(0.55);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.15);
+    opacity: 0;
+  }
+}

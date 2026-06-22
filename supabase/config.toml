@@ -1,0 +1,11 @@
+# פרויקט Supabase ייעודי ל"מוקד הניחושים" — מארח פונקציה אחת בלבד: פרוקסי חסר-מצב ל-API-Football.
+# אין כאן DB / auth / טבלאות. הפונקציה היא החריג היחיד המותר ל-§2 ב-CLAUDE.md.
+project_id = "moked-hanichushim"
+
+# הפרוקסי נקרא מ-PWA ללא auth — חובה לכבות אימות JWT, אחרת ה-gateway מחזיר 401 שקט.
+[functions.apifootball-proxy]
+verify_jwt = false
+
+# מנוע האנליסט (Claude LLM) — גם הוא נקרא מה-PWA ללא auth.
+[functions.claude-analyst]
+verify_jwt = false

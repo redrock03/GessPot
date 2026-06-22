@@ -1,0 +1,249 @@
+/* זוג ההצעות — החתימה הוויזואלית (DESIGN.md §4.1). הרכיב היחיד שמותר לו להיות נועז. */
+
+.sg-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-3);
+}
+
+.sg-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  padding: var(--sp-5) var(--sp-5) var(--sp-4);
+  border-radius: var(--r-card);
+  background: var(--surface);
+  transition:
+    transform var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+}
+.sg-card--steady {
+  border: var(--bd-steady);
+}
+.sg-card--strike {
+  border: var(--bd-strike);
+}
+.sg-card:hover {
+  transform: translateY(-2px);
+}
+.sg-card--steady:hover {
+  box-shadow: var(--sh-glow-steady);
+}
+.sg-card--strike:hover {
+  box-shadow: var(--sh-glow-strike);
+}
+
+.sg-card__head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.sg-card__icon {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+}
+.sg-card--steady .sg-card__icon {
+  color: var(--steady);
+}
+.sg-card--strike .sg-card__icon {
+  color: var(--strike);
+}
+.sg-card__title {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+.sg-card__kind {
+  font-size: var(--fs-h2);
+  font-weight: var(--fw-h2);
+}
+.sg-card--steady .sg-card__kind {
+  color: var(--steady);
+}
+.sg-card--strike .sg-card__kind {
+  color: var(--strike);
+}
+.sg-card__tag {
+  font-size: var(--fs-meta);
+  font-weight: var(--fw-meta);
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+
+.sg-card__score {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+.sg-card__num {
+  font-size: var(--fs-score);
+  font-weight: var(--fw-score);
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.sg-card__side {
+  font-size: var(--fs-meta);
+  color: var(--text-dim);
+}
+
+.sg-data {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin: 0;
+}
+.sg-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: var(--sp-2) 0;
+}
+.sg-row dt {
+  font-size: var(--fs-meta);
+  color: var(--text-dim);
+}
+.sg-row dd {
+  margin: 0;
+  font-size: var(--fs-label);
+  font-weight: var(--fw-label);
+  color: var(--text);
+}
+.sg-row.is-emph dd {
+  font-size: var(--fs-h2);
+}
+.sg-card--steady .sg-row.is-emph dd {
+  color: var(--steady);
+}
+.sg-card--strike .sg-row.is-emph dd {
+  color: var(--strike);
+}
+.sg-row--ev {
+  margin-top: var(--sp-1);
+  border-top: 1px dashed var(--line);
+  padding-top: var(--sp-3);
+}
+.sg-row--ev dt {
+  color: var(--text-dim);
+}
+
+/* ===== מצב התכנסות — שני התאומים מתאחדים ===== */
+.sg-converged {
+  border: 1.5px solid transparent;
+  border-radius: var(--r-card);
+  background:
+    linear-gradient(var(--surface), var(--surface)) padding-box,
+    linear-gradient(135deg, var(--steady), var(--strike)) border-box;
+  overflow: hidden;
+}
+.sg-converged__ribbon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  font-size: var(--fs-meta);
+  font-weight: var(--fw-label);
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  background: linear-gradient(135deg, var(--steady), var(--strike));
+}
+.sg-converged__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  padding: var(--sp-6) var(--sp-6) var(--sp-4);
+}
+.sg-converged__score {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-4);
+  flex-wrap: wrap;
+}
+.sg-converged__num {
+  font-size: var(--fs-score-xl);
+  font-weight: var(--fw-score);
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.sg-converged__side {
+  font-size: var(--fs-h2);
+  font-weight: var(--fw-h2);
+  color: var(--text);
+}
+.sg-converged .sg-data {
+  max-width: 320px;
+}
+/* בכרטיס המתכנס אין מחלקת steady/strike — נותנים לערך המודגש מבטא זהב מפורש (תיקון P2). */
+.sg-converged .sg-row.is-emph dd {
+  font-size: var(--fs-h2);
+  color: var(--strike);
+}
+.sg-converged__note {
+  margin: 0;
+  padding: 0 var(--sp-6) var(--sp-5);
+  font-size: var(--fs-meta);
+  color: var(--text-dim);
+}
+
+/* --- חוגת הסיכון: כרטיס מומלץ + שמירת ניחוש --- */
+.sg-card--steady.is-rec {
+  box-shadow: inset 0 0 0 1px var(--steady);
+}
+.sg-card--strike.is-rec {
+  box-shadow: inset 0 0 0 1px var(--strike);
+}
+.sg-foot {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-top: auto;
+  padding-top: var(--sp-3);
+  border-top: var(--bd);
+}
+.sg-foot__rec {
+  font-size: var(--fs-micro);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.sg-card--steady .sg-foot__rec {
+  color: var(--steady);
+}
+.sg-card--strike .sg-foot__rec {
+  color: var(--strike);
+}
+.sg-save {
+  margin-inline-start: auto;
+  padding: var(--sp-2) var(--sp-4);
+  border-radius: var(--r-pill);
+  border: var(--bd);
+  background: var(--surface-2);
+  color: var(--text-dim);
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    background var(--dur) var(--ease);
+}
+.sg-save:hover {
+  color: var(--text);
+  border-color: var(--text-mute);
+}
+.sg-save.is-saved {
+  color: var(--text);
+  background: var(--surface);
+  border-color: var(--text-mute);
+}
+.sg-converged .sg-foot {
+  margin: 0 var(--sp-6) var(--sp-5);
+  padding-top: 0;
+  border-top: none;
+}
