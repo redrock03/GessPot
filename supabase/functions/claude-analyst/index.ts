@@ -10,6 +10,7 @@ const ANTHROPIC_KEY = Deno.env.get('ANTHROPIC_KEY') ?? '';
 const APP_SHARED_SECRET = Deno.env.get('APP_SHARED_SECRET') ?? ''; // אם מוגדר — נדרש header x-app-secret תואם
 
 const MODEL = 'claude-opus-4-8';
+const FALLBACK_MODEL = 'claude-sonnet-4-6'; // קיבולת נפרדת — כש-Opus עמוס
 
 // רשימת מקורות מורשים (מופרדת בפסיקים) — פיתוח (localhost) + פרודקשן (github.io). '*' = פתוח.
 const ALLOWED = (Deno.env.get('ALLOWED_ORIGIN') ?? '*')
@@ -91,8 +92,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
     return json({ error: 'body must be JSON (AnalystInput)' }, 400);
   }
 
-  const body = {
-    model: MODEL,
+  const baseBody = {
     max_tokens: 12000,
     thinking: { type: 'adaptive' },
     output_config: {
@@ -108,27 +108,58 @@ Deno.serve(async (req: Request): Promise<Response> => {
     ],
   };
 
-  let res: Response;
-  try {
-    res = await fetch(ANTHROPIC_URL, {
-      method: 'POST',
-      headers: {
-        'x-api-key': ANTHROPIC_KEY,
-        'anthropic-version': '2023-06-01',
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify(body),
-    });
-  } catch (err) {
-    return json({ error: 'anthropic fetch failed', detail: String(err) }, 502);
-  }
+  // עומס זמני של Anthropic (overloaded_error / 429 / 5xx) — לא נכשלים מיד:
+  // שני נסיונות Opus עם backoff, ואז fallback ל-Sonnet (קיבולת נפרדת).
+  const attempts = [
+    { model: MODEL, delay: 0 },
+    { model: MODEL, delay: 900 },
+    { model: FALLBACK_MODEL, delay: 1600 },
+  ];
 
-  const raw = await res.json().catch(() => null);
-  if (!res.ok) {
-    return json({ error: 'anthropic error', status: res.status, detail: raw }, 502);
-  }
-  if (raw?.stop_reason === 'refusal') {
-    return json({ error: 'model refused', detail: raw?.stop_details ?? null }, 422);
+  type AnthropicRaw = {
+    stop_reason?: string;
+    stop_details?: unknown;
+    error?: { type?: string };
+    content?: Array<{ type: string; text?: string }>;
+    usage?: unknown;
+  };
+  let raw: AnthropicRaw | null = null;
+
+  for (let i = 0; i < attempts.length; i++) {
+    const { model, delay } = attempts[i];
+    const last = i === attempts.length - 1;
+    if (delay) await new Promise((r) => setTimeout(r, delay));
+
+    let res: Response;
+    try {
+      res = await fetch(ANTHROPIC_URL, {
+        method: 'POST',
+        headers: {
+          'x-api-key': ANTHROPIC_KEY,
+          'anthropic-version': '2023-06-01',
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({ model, ...baseBody }),
+      });
+    } catch (err) {
+      if (last) return json({ error: 'anthropic fetch failed', detail: String(err) }, 502);
+      continue;
+    }
+
+    raw = (await res.json().catch(() => null)) as AnthropicRaw | null;
+    if (res.ok && raw?.stop_reason !== 'refusal') break; // הצלחה
+    if (raw?.stop_reason === 'refusal') {
+      return json({ error: 'model refused', detail: raw?.stop_details ?? null }, 422);
+    }
+    const retryable =
+      res.status === 429 ||
+      res.status === 529 ||
+      res.status >= 500 ||
+      raw?.error?.type === 'overloaded_error';
+    if (!retryable || last) {
+      return json({ error: 'anthropic error', status: res.status, detail: raw }, 502);
+    }
+    // אחרת — ננסה שוב (Opus → Opus → Sonnet)
   }
 
   // הפלט המובנה מגיע כבלוק טקסט (אחרי בלוקי thinking).
